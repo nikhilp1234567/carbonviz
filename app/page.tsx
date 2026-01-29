@@ -9,8 +9,7 @@ import { calculateCarbon, calculateRestoration, convertUserOptionsToInputs, User
 
 const ECOSYSTEMS: Ecosystem[] = ['Forest', 'Rainforest', 'Mangrove', 'Peatland', 'Grassland'];
 
-// Benchmark for visualization: The "worst case" annual footprint (approx Jetsetter + Large House + High Mileage)
-// If you reach this, the island is mostly dead (health ~ 0).
+// Benchmark: 35 tonnes is the "Full Density" cap for visualization
 const MAX_ANNUAL_TONNES = 35; 
 
 export default function Home() {
@@ -23,29 +22,29 @@ export default function Home() {
 
   const [activeTab, setActiveTab] = useState<Ecosystem>('Forest');
 
-  // Convert simplified user options to raw carbon inputs on the fly
   const inputs = convertUserOptionsToInputs(options);
   const { totalKg, totalTonnes } = calculateCarbon(inputs);
   const restoration = calculateRestoration(totalKg, activeTab);
 
-  // Calculate "Island Health" (0.0 to 1.0)
-  // Higher Carbon = Lower Health
-  // We clamp it so it doesn't go below 0 (though visualizer handles 0 fine)
-  // 0 Tonnes = 100% Health
-  // MAX_ANNUAL_TONNES = 0% Health
-  const rawHealth = 1 - (totalTonnes / MAX_ANNUAL_TONNES);
-  const health = Math.max(0.05, Math.min(1, rawHealth)); // Keep at least 5% alive so it's not totally empty space
+  // LOGIC FIX: Inverted the relationship.
+  // Previously: High Carbon = Low Health (Dead Island).
+  // Now: High Carbon = High Density (More trees needed to restore).
+  // We clamp it so there's always a few trees (0.1) and it caps at 1.0.
+  const visualDensity = Math.min(1, Math.max(0.1, totalTonnes / MAX_ANNUAL_TONNES));
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-gradient-to-b from-blue-50 via-teal-50 to-emerald-50 text-gray-800 font-sans">
       
-      {/* --- UI LAYER (Glassmorphism) --- */}
-      <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-4 md:p-8">
+      {/* --- UI LAYER --- */}
+      <div className="absolute inset-0 z-10 pointer-events-none p-4 md:p-8">
         
-        {/* Header & Calculator (Top Left Floating) */}
-        <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4">
+        {/* TOP LAYER WRAPPER */}
+        <div className="flex flex-col md:flex-row justify-between items-start w-full h-full relative">
           
-          <div className="pointer-events-auto w-full max-w-sm">
+          {/* LEFT COLUMN: Calculator & Stats Stacked */}
+          <div className="flex flex-col gap-4 w-full max-w-sm pointer-events-auto">
+            
+             {/* 1. Calculator Card */}
              <div className="bg-white/40 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-6 transition-all duration-300 hover:bg-white/50 ring-1 ring-white/20">
                 <div className="mb-6 border-b border-gray-200/20 pb-4">
                   <h1 className="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-2">
@@ -66,43 +65,45 @@ export default function Home() {
                    <div className="text-sm font-bold text-emerald-600 mb-1.5 opacity-80">tonnes CO₂ / yr</div>
                 </div>
              </div>
-          </div>
 
-          {/* Restoration Stats (Top Right Floating) */}
-          <div className="pointer-events-auto w-full md:w-auto">
-             <div className="bg-emerald-900/80 backdrop-blur-xl shadow-2xl rounded-3xl p-6 text-white min-w-[240px] md:text-right border border-emerald-700/30 ring-1 ring-emerald-400/20 transition-all hover:bg-emerald-900/90">
-                <h4 className="text-emerald-300 text-[10px] font-bold uppercase tracking-widest mb-2 opacity-80">To Neutralize You Need</h4>
-                <div className="text-5xl font-black leading-none mb-1 tracking-tight">
-                  {restoration.count.toLocaleString()}
-                </div>
-                <div className="text-lg font-bold text-emerald-100">{restoration.unit}</div>
-                <div className="mt-3 inline-block bg-emerald-800/50 rounded-lg px-3 py-1 text-xs text-emerald-200 font-medium border border-emerald-700/50">
-                   Restored {activeTab}
+             {/* 2. Restoration Stats (Moved below Calculator) */}
+             <div className="bg-emerald-900/80 backdrop-blur-xl shadow-2xl rounded-3xl p-6 text-white w-full border border-emerald-700/30 ring-1 ring-emerald-400/20 transition-all hover:bg-emerald-900/90">
+                <div className="flex justify-between items-end md:block md:text-right">
+                  <div>
+                    <h4 className="text-emerald-300 text-[10px] font-bold uppercase tracking-widest mb-2 opacity-80">To Neutralize You Need</h4>
+                    <div className="text-5xl font-black leading-none mb-1 tracking-tight">
+                      {restoration.count.toLocaleString()}
+                    </div>
+                    <div className="text-lg font-bold text-emerald-100">{restoration.unit}</div>
+                  </div>
+                  <div className="mt-0 md:mt-3 inline-block bg-emerald-800/50 rounded-lg px-3 py-1 text-xs text-emerald-200 font-medium border border-emerald-700/50">
+                     Restored {activeTab}
+                  </div>
                 </div>
              </div>
+
+          </div>
+
+          {/* TOP RIGHT: Navigation Tabs (Moved from Bottom) */}
+          <div className="pointer-events-auto absolute top-0 right-0 md:relative">
+            <div className="bg-white/30 backdrop-blur-xl p-1.5 rounded-full shadow-2xl border border-white/40 flex gap-1 overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none">
+              {ECOSYSTEMS.map((eco) => (
+                <button
+                  key={eco}
+                  onClick={() => setActiveTab(eco)}
+                  className={`px-5 py-3 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap ${
+                    activeTab === eco
+                      ? 'bg-emerald-600 text-white shadow-lg scale-105'
+                      : 'text-gray-600 hover:bg-white/40 hover:text-emerald-800'
+                  }`}
+                >
+                  {eco}
+                </button>
+              ))}
+            </div>
           </div>
 
         </div>
-
-        {/* Navigation Tabs (Bottom Center Dock) */}
-        <div className="pointer-events-auto flex justify-center pb-4 md:pb-8">
-          <div className="bg-white/30 backdrop-blur-xl p-1.5 rounded-full shadow-2xl border border-white/40 flex gap-1 overflow-x-auto max-w-full">
-            {ECOSYSTEMS.map((eco) => (
-              <button
-                key={eco}
-                onClick={() => setActiveTab(eco)}
-                className={`px-5 py-3 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap ${
-                  activeTab === eco
-                    ? 'bg-emerald-600 text-white shadow-lg scale-105'
-                    : 'text-gray-600 hover:bg-white/40 hover:text-emerald-800'
-                }`}
-              >
-                {eco}
-              </button>
-            ))}
-          </div>
-        </div>
-
       </div>
 
       {/* --- 3D SCENE LAYER --- */}
@@ -129,12 +130,13 @@ export default function Home() {
             />
 
             <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
-              <group position={[0, -2, 0]}>
-                {activeTab === 'Forest' && <ForestIsland health={health} />}
-                {activeTab === 'Rainforest' && <RainforestIsland health={health} />}
-                {activeTab === 'Mangrove' && <MangroveIsland health={health} />}
-                {activeTab === 'Peatland' && <PeatlandIsland health={health} />}
-                {activeTab === 'Grassland' && <GrasslandIsland health={health} />}
+              {/* Position Change: Moved to [6, 0, 0] to overshoot right side and move up */}
+              <group position={[6, 0, 0]}>
+                {activeTab === 'Forest' && <ForestIsland health={visualDensity} />}
+                {activeTab === 'Rainforest' && <RainforestIsland health={visualDensity} />}
+                {activeTab === 'Mangrove' && <MangroveIsland health={visualDensity} />}
+                {activeTab === 'Peatland' && <PeatlandIsland health={visualDensity} />}
+                {activeTab === 'Grassland' && <GrasslandIsland health={visualDensity} />}
               </group>
             </Float>
 
