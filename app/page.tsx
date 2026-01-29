@@ -151,7 +151,7 @@ export default function Home() {
               target={[0, 0, 0]}
             />
 
-            <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
+<Float speed={2} rotationIntensity={0} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
               {/* Position Change: Moved to [9, 0, 0] and scaled up */}
               <group position={[0, 0, 0]} scale={1.8}>
                 {activeTab === 'Forest' && <ForestIsland health={visualDensity} />}
