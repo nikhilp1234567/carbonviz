@@ -3,6 +3,10 @@ export interface CarbonInputs {
   gas: number; // Therms per month
   mileage: number; // Miles per year
   flights: number; // Hours per year
+  diet: number; // kg per year
+  recycling: number; // kg per year (adjustment)
+  publicTransport: number; // kg per year
+  shopping: number; // kg per year
 }
 
 export interface UserOptions {
@@ -10,6 +14,10 @@ export interface UserOptions {
   homeSize: 'Small' | 'Medium' | 'Large';
   carUsage: 'None' | 'Low' | 'Average' | 'High';
   flightFrequency: 'None' | 'Occasional' | 'Frequent' | 'Jetsetter';
+  diet: 'Meat Lover' | 'Average' | 'Vegetarian' | 'Vegan';
+  recycling: 'None' | 'Some' | 'Diligent';
+  publicTransport: 'None' | 'Occasional' | 'Frequent';
+  shopping: 'Minimal' | 'Average' | 'Shopaholic';
 }
 
 export type Ecosystem = 'Forest' | 'Rainforest' | 'Mangrove' | 'Peatland' | 'Grassland';
@@ -19,6 +27,10 @@ export const convertUserOptionsToInputs = (options: UserOptions): CarbonInputs =
   let gas = 0;
   let mileage = 0;
   let flights = 0;
+  let diet = 0;
+  let recycling = 0;
+  let publicTransport = 0;
+  let shopping = 0;
 
   // 1. Home Energy (Electricity & Gas)
   // Base estimates per month based on home size + people
@@ -49,7 +61,40 @@ export const convertUserOptionsToInputs = (options: UserOptions): CarbonInputs =
     case 'Jetsetter': flights = 50; break;
   }
 
-  return { electricity, gas, mileage, flights };
+  // 4. Diet (kg CO2e per year)
+  // Meat Lover: 3.3t, Average: 2.5t, Vegetarian: 1.7t, Vegan: 1.5t
+  switch (options.diet) {
+    case 'Meat Lover': diet = 3300; break;
+    case 'Average': diet = 2500; break;
+    case 'Vegetarian': diet = 1700; break;
+    case 'Vegan': diet = 1500; break;
+  }
+
+  // 5. Recycling (kg CO2e per year adjustment)
+  // None: +200, Some: 0, Diligent: -200
+  switch (options.recycling) {
+    case 'None': recycling = 200; break;
+    case 'Some': recycling = 0; break;
+    case 'Diligent': recycling = -200; break;
+  }
+  
+  // 6. Public Transport (kg CO2e per year)
+  // None: 0, Occasional: 200, Frequent: 800
+  switch (options.publicTransport) {
+    case 'None': publicTransport = 0; break;
+    case 'Occasional': publicTransport = 200; break;
+    case 'Frequent': publicTransport = 800; break;
+  }
+
+  // 7. Shopping Habits (kg CO2e per year - embedded carbon)
+  // Minimal: 500, Average: 1500, Shopaholic: 4000
+  switch (options.shopping) {
+    case 'Minimal': shopping = 500; break;
+    case 'Average': shopping = 1500; break;
+    case 'Shopaholic': shopping = 4000; break;
+  }
+
+  return { electricity, gas, mileage, flights, diet, recycling, publicTransport, shopping };
 };
 
 export const calculateCarbon = (inputs: CarbonInputs) => {
@@ -58,8 +103,12 @@ export const calculateCarbon = (inputs: CarbonInputs) => {
   const gasKg = inputs.gas * 12 * 5.3; // ~5.3 kg per therm
   const carKg = inputs.mileage * 0.404; // ~404g per mile
   const flightKg = inputs.flights * 90; // ~90kg per hour
+  const dietKg = inputs.diet;
+  const recyclingKg = inputs.recycling;
+  const publicTransportKg = inputs.publicTransport;
+  const shoppingKg = inputs.shopping;
 
-  const totalKg = electricityKg + gasKg + carKg + flightKg;
+  const totalKg = electricityKg + gasKg + carKg + flightKg + dietKg + recyclingKg + publicTransportKg + shoppingKg;
   const totalTonnes = totalKg / 1000;
 
   return { totalKg, totalTonnes };

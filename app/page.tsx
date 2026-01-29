@@ -17,7 +17,11 @@ export default function Home() {
     householdSize: '1',
     homeSize: 'Medium',
     carUsage: 'Average',
-    flightFrequency: 'Occasional'
+    flightFrequency: 'Occasional',
+    diet: 'Average',
+    recycling: 'Some',
+    publicTransport: 'Occasional',
+    shopping: 'Average'
   });
 
   const [activeTab, setActiveTab] = useState<Ecosystem>('Forest');
@@ -126,12 +130,13 @@ export default function Home() {
               maxPolarAngle={Math.PI / 2.2} 
               enableZoom={true} 
               minDistance={10} 
-              maxDistance={30} 
+              maxDistance={30}
+              target={[0, 0, 0]}
             />
 
             <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
-              {/* Position Change: Moved to [6, 0, 0] to overshoot right side and move up */}
-              <group position={[6, 0, 0]}>
+              {/* Position Change: Moved to [9, 0, 0] and scaled up */}
+              <group position={[0, 0, 0]} scale={1.3}>
                 {activeTab === 'Forest' && <ForestIsland health={visualDensity} />}
                 {activeTab === 'Rainforest' && <RainforestIsland health={visualDensity} />}
                 {activeTab === 'Mangrove' && <MangroveIsland health={visualDensity} />}

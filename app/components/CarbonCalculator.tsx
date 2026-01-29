@@ -76,6 +76,51 @@ export default function CarbonCalculator({ options, onChange }: Props) {
           <ArrowIcon />
         </div>
       </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className={groupClass}>
+          <label className={labelClass}>Diet</label>
+          <select name="diet" value={options.diet} onChange={handleChange} className={selectClass}>
+            <option value="Meat Lover">Meat Lover</option>
+            <option value="Average">Average</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+          </select>
+          <ArrowIcon />
+        </div>
+
+        <div className={groupClass}>
+          <label className={labelClass}>Recycling</label>
+          <select name="recycling" value={options.recycling} onChange={handleChange} className={selectClass}>
+            <option value="None">None</option>
+            <option value="Some">Some</option>
+            <option value="Diligent">Diligent</option>
+          </select>
+          <ArrowIcon />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className={groupClass}>
+          <label className={labelClass}>Public Transport</label>
+          <select name="publicTransport" value={options.publicTransport} onChange={handleChange} className={selectClass}>
+            <option value="None">None</option>
+            <option value="Occasional">Occasional</option>
+            <option value="Frequent">Frequent</option>
+          </select>
+          <ArrowIcon />
+        </div>
+
+        <div className={groupClass}>
+          <label className={labelClass}>Shopping Habits</label>
+          <select name="shopping" value={options.shopping} onChange={handleChange} className={selectClass}>
+            <option value="Minimal">Minimal</option>
+            <option value="Average">Average</option>
+            <option value="Shopaholic">Shopaholic</option>
+          </select>
+          <ArrowIcon />
+        </div>
+      </div>
     </div>
   );
 }
