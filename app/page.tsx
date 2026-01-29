@@ -9,6 +9,10 @@ import { calculateCarbon, calculateRestoration, convertUserOptionsToInputs, User
 
 const ECOSYSTEMS: Ecosystem[] = ['Forest', 'Rainforest', 'Mangrove', 'Peatland', 'Grassland'];
 
+// Benchmark for visualization: The "worst case" annual footprint (approx Jetsetter + Large House + High Mileage)
+// If you reach this, the island is mostly dead (health ~ 0).
+const MAX_ANNUAL_TONNES = 35; 
+
 export default function Home() {
   const [options, setOptions] = useState<UserOptions>({
     householdSize: '1',
@@ -23,6 +27,14 @@ export default function Home() {
   const inputs = convertUserOptionsToInputs(options);
   const { totalKg, totalTonnes } = calculateCarbon(inputs);
   const restoration = calculateRestoration(totalKg, activeTab);
+
+  // Calculate "Island Health" (0.0 to 1.0)
+  // Higher Carbon = Lower Health
+  // We clamp it so it doesn't go below 0 (though visualizer handles 0 fine)
+  // 0 Tonnes = 100% Health
+  // MAX_ANNUAL_TONNES = 0% Health
+  const rawHealth = 1 - (totalTonnes / MAX_ANNUAL_TONNES);
+  const health = Math.max(0.05, Math.min(1, rawHealth)); // Keep at least 5% alive so it's not totally empty space
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-gradient-to-b from-blue-50 via-teal-50 to-emerald-50 text-gray-800 font-sans">
@@ -118,11 +130,11 @@ export default function Home() {
 
             <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
               <group position={[0, -2, 0]}>
-                {activeTab === 'Forest' && <ForestIsland count={restoration.count} />}
-                {activeTab === 'Rainforest' && <RainforestIsland count={restoration.count} />}
-                {activeTab === 'Mangrove' && <MangroveIsland count={restoration.count} />}
-                {activeTab === 'Peatland' && <PeatlandIsland count={restoration.count} />}
-                {activeTab === 'Grassland' && <GrasslandIsland count={restoration.count} />}
+                {activeTab === 'Forest' && <ForestIsland health={health} />}
+                {activeTab === 'Rainforest' && <RainforestIsland health={health} />}
+                {activeTab === 'Mangrove' && <MangroveIsland health={health} />}
+                {activeTab === 'Peatland' && <PeatlandIsland health={health} />}
+                {activeTab === 'Grassland' && <GrasslandIsland health={health} />}
               </group>
             </Float>
 
