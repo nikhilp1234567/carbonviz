@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { Cone, Cylinder, Sphere, Box, Torus } from '@react-three/drei';
-import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, MovingElement, ISLAND_CONFIG } from './Shared';
+import { IslandProps, getCircularPositions, IslandBase, AnimatedElement, MovingElement, ISLAND_CONFIG } from './Shared';
 
 // --- Wildlife Components ---
 

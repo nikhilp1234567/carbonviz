@@ -3,7 +3,7 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Cone, Cylinder, Sphere, Box } from '@react-three/drei';
-import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, ISLAND_CONFIG } from './Shared';
+import { IslandProps, getCircularPositions, IslandBase, AnimatedElement, ISLAND_CONFIG } from './Shared';
 import * as THREE from 'three';
 
 // --- Animation Helper ---
