@@ -54,7 +54,7 @@ export default function Home() {
   }
 
   return (
-    <main className="relative h-screen w-screen overflow-hidden bg-gradient-to-b from-blue-50 via-teal-50 to-emerald-50 text-gray-800 font-sans">
+    <main className="relative h-screen w-screen overflow-hidden bg-gradient-to-b bg-blue-300  text-gray-800 font-sans">
       
       {/* --- UI LAYER --- */}
       <div className="absolute inset-0 z-10 pointer-events-none p-4 md:p-8">
@@ -153,7 +153,7 @@ export default function Home() {
 
             <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
               {/* Position Change: Moved to [9, 0, 0] and scaled up */}
-              <group position={[0, 0, 0]} scale={1.3}>
+              <group position={[0, 0, 0]} scale={1.8}>
                 {activeTab === 'Forest' && <ForestIsland health={visualDensity} />}
                 {activeTab === 'Rainforest' && <RainforestIsland health={visualDensity} />}
                 {activeTab === 'Mangrove' && <MangroveIsland health={visualDensity} />}
