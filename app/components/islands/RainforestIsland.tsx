@@ -136,7 +136,7 @@ const GiantKapok = () => (
 export const RainforestIsland = ({ health }: IslandProps) => {
   // Generate stable positions for flora
   // Modulo 8 used below for variety
-  const items = useMemo(() => getCircularPositions(160, ISLAND_CONFIG.contentRadius, 300), []);
+  const items = useMemo(() => getCircularPositions(320, ISLAND_CONFIG.contentRadius, 300), []);
   
   // Generate ground animals
   const groundAnimals = useMemo(() => {
@@ -149,12 +149,12 @@ export const RainforestIsland = ({ health }: IslandProps) => {
 
   return (
     <group>
-      <IslandBase color="#1b5e20" health={health} />
+      <IslandBase color="#5f5444" health={health} />
       
       {/* FLORA LAYERS */}
       {items.map((item, i) => {
         // Specific check for ONE Giant Tree
-        const isGiantTree = i === 25; 
+        const isGiantTree = i === 12; 
         
         // Use modulo for standard variety (8 types)
         const type = i % 8; 

@@ -211,10 +211,10 @@ const WildflowerPatch = () => (
 
 export const GrasslandIsland = ({ health }: IslandProps) => {
   // 1. CARPET LAYER: 800 small items to cover the ground
-  const carpet = useMemo(() => getCircularPositions(800, ISLAND_CONFIG.contentRadius + 0.3, 800), []);
+  const carpet = useMemo(() => getCircularPositions(900, ISLAND_CONFIG.contentRadius + 0.3, 800), []);
 
   // 2. FLORA LAYER: 350 larger items (Tall stuff)
-  const items = useMemo(() => getCircularPositions(350, ISLAND_CONFIG.contentRadius + 0.1, 450), []);
+  const items = useMemo(() => getCircularPositions(500, ISLAND_CONFIG.contentRadius + 0.1, 450), []);
   
   // 3. FAUNA LAYER: 10 animals
   const fauna = useMemo(() => {
@@ -229,7 +229,7 @@ export const GrasslandIsland = ({ health }: IslandProps) => {
   return (
     <group>
       {/* Lighter Green Base for Prairie */}
-      <IslandBase color="#c5e1a5" health={health} />
+      <IslandBase color="#efb556" health={health} />
       
       {/* CARPET LAYER (Rendered first, lowest) */}
       {carpet.map((item, i) => (

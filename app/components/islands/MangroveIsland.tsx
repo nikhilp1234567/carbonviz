@@ -79,7 +79,7 @@ const MangroveTree = ({ variant }: { variant: number }) => {
 
 const Crab = ({ isVisible }: { isVisible: boolean }) => (
   <AnimatedElement isVisible={isVisible} baseScale={0.25}>
-    <group position={[0, 0.1, 0]}>
+    <group position={[0,1.5, 0]}>
        <Box args={[0.5, 0.2, 0.4]}><meshStandardMaterial color="#d32f2f" /></Box>
        {/* Legs */}
        <Box args={[0.6, 0.05, 0.05]} position={[0, 0, 0.2]} rotation={[0, 0.2, 0]}><meshStandardMaterial color="#b71c1c" /></Box>
@@ -93,7 +93,7 @@ const Crab = ({ isVisible }: { isVisible: boolean }) => (
 
 const Turtle = ({ isVisible }: { isVisible: boolean }) => (
   <AnimatedElement isVisible={isVisible} baseScale={0.3}>
-    <group position={[0, 0.1, 0]}>
+    <group position={[0, 1, 0]}>
       <Sphere args={[0.4, 5, 5]} scale={[1, 0.5, 1.1]} position={[0, 0.1, 0]}><meshStandardMaterial color="#43a047" flatShading /></Sphere>
       <Sphere args={[0.15, 4, 4]} position={[0, 0.1, 0.5]}><meshStandardMaterial color="#8bc34a" /></Sphere>
       <Box args={[0.2, 0.05, 0.3]} position={[0.3, 0, 0.2]} rotation={[0, 0.5, 0]}><meshStandardMaterial color="#8bc34a" /></Box>
@@ -226,17 +226,38 @@ export const MangroveIsland = ({ health }: IslandProps) => {
         </SwimmingGroup>
       </group>
 
-      {/* Fish School 1 */}
-      <group rotation={[0, 1, 0]}>
-        <SwimmingGroup radius={waterRadius - 2} speed={0.6}>
-           <FishSchool isVisible={health > 0.3} color="#ffeb3b" />
+      {/* Fish School - Red */}
+      <group rotation={[0, 0, 0]}>
+        <SwimmingGroup radius={waterRadius - 2.4} speed={0.6}>
+          <FishSchool isVisible={health > 0.2} color="#f44336" />
         </SwimmingGroup>
       </group>
 
-      {/* Fish School 2 */}
+      {/* Fish School - Yellow */}
+      <group rotation={[0, 1, 0]}>
+        <SwimmingGroup radius={waterRadius - 2} speed={0.64}>
+          <FishSchool isVisible={health > 0.3} color="#ffeb3b" />
+        </SwimmingGroup>
+      </group>
+
+      {/* Fish School - Green */}
+      <group rotation={[0, 2, 0]}>
+        <SwimmingGroup radius={waterRadius - 1.8} speed={0.68} reverse>
+          <FishSchool isVisible={health > 0.45} color="#4caf50" />
+        </SwimmingGroup>
+      </group>
+
+      {/* Fish School - Blue */}
       <group rotation={[0, 3, 0]}>
         <SwimmingGroup radius={waterRadius - 1.5} speed={0.7} reverse>
-           <FishSchool isVisible={health > 0.6} color="#03a9f4" />
+          <FishSchool isVisible={health > 0.6} color="#03a9f4" />
+        </SwimmingGroup>
+      </group>
+
+      {/* Fish School - Purple */}
+      <group rotation={[0, 4, 0]}>
+        <SwimmingGroup radius={waterRadius - 1.2} speed={0.8}>
+          <FishSchool isVisible={health > 0.75} color="#9c27b0" />
         </SwimmingGroup>
       </group>
 
