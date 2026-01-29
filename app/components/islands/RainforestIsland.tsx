@@ -2,123 +2,133 @@
 
 import React, { useMemo } from 'react';
 import { Cone, Cylinder, Sphere, Box, Torus } from '@react-three/drei';
-import { IslandProps, getStablePositions, IslandBase, AnimatedElement } from './Shared';
+import { IslandProps, getStablePositions, IslandBase, AnimatedElement, MovingElement } from './Shared';
 
 // --- Wildlife Components ---
 
 const Jaguar = ({ isVisible }: { isVisible: boolean }) => (
   <AnimatedElement isVisible={isVisible} baseScale={0.45}>
-    <group position={[0, 0.4, 0]}>
-      {/* Body */}
-      <Box args={[0.6, 0.45, 1.1]} position={[0, 0.4, 0]}>
-        <meshStandardMaterial color="#ffb300" />
-      </Box>
-      {/* Spots */}
-      <Box args={[0.62, 0.1, 0.8]} position={[0, 0.61, 0]}>
-        <meshStandardMaterial color="#3e2723" />
-      </Box>
-      {/* Head */}
-      <Box args={[0.4, 0.4, 0.45]} position={[0, 0.6, 0.7]}>
-        <meshStandardMaterial color="#ffb300" />
-      </Box>
-      {/* Legs */}
-      <Box args={[0.15, 0.45, 0.15]} position={[-0.2, 0, 0.4]}><meshStandardMaterial color="#ffca28" /></Box>
-      <Box args={[0.15, 0.45, 0.15]} position={[0.2, 0, 0.4]}><meshStandardMaterial color="#ffca28" /></Box>
-      <Box args={[0.15, 0.45, 0.15]} position={[-0.2, 0, -0.4]}><meshStandardMaterial color="#ffca28" /></Box>
-      <Box args={[0.15, 0.45, 0.15]} position={[0.2, 0, -0.4]}><meshStandardMaterial color="#ffca28" /></Box>
-      {/* Tail */}
-      <Box args={[0.1, 0.1, 0.6]} position={[0, 0.5, -0.8]} rotation={[0.5, 0, 0]}>
-        <meshStandardMaterial color="#ffb300" />
-      </Box>
-    </group>
+    <MovingElement type="breathe" speed={1.2} intensity={0.04}>
+      <group position={[0, 0.4, 0]}>
+        {/* Body */}
+        <Box args={[0.6, 0.45, 1.1]} position={[0, 0.4, 0]}>
+          <meshStandardMaterial color="#ffb300" />
+        </Box>
+        {/* Spots */}
+        <Box args={[0.62, 0.1, 0.8]} position={[0, 0.61, 0]}>
+          <meshStandardMaterial color="#3e2723" />
+        </Box>
+        {/* Head */}
+        <Box args={[0.4, 0.4, 0.45]} position={[0, 0.6, 0.7]}>
+          <meshStandardMaterial color="#ffb300" />
+        </Box>
+        {/* Legs */}
+        <Box args={[0.15, 0.45, 0.15]} position={[-0.2, 0, 0.4]}><meshStandardMaterial color="#ffca28" /></Box>
+        <Box args={[0.15, 0.45, 0.15]} position={[0.2, 0, 0.4]}><meshStandardMaterial color="#ffca28" /></Box>
+        <Box args={[0.15, 0.45, 0.15]} position={[-0.2, 0, -0.4]}><meshStandardMaterial color="#ffca28" /></Box>
+        <Box args={[0.15, 0.45, 0.15]} position={[0.2, 0, -0.4]}><meshStandardMaterial color="#ffca28" /></Box>
+        {/* Tail */}
+        <Box args={[0.1, 0.1, 0.6]} position={[0, 0.5, -0.8]} rotation={[0.5, 0, 0]}>
+          <meshStandardMaterial color="#ffb300" />
+        </Box>
+      </group>
+    </MovingElement>
   </AnimatedElement>
 );
 
 const Snake = ({ isVisible }: { isVisible: boolean }) => (
   <AnimatedElement isVisible={isVisible} baseScale={0.35}>
-    <group position={[0, 0.05, 0]} rotation={[0, Math.random() * Math.PI, 0]}>
-      {/* S-Shape Body created by segments on the ground */}
-      {/* Tail */}
-      <Sphere args={[0.15, 6, 6]} position={[-0.3, 0, -0.2]}>
+    <MovingElement type="sway" speed={3} intensity={0.1}>
+      <group position={[0, 0.05, 0]} rotation={[0, Math.random() * Math.PI, 0]}>
+        {/* S-Shape Body created by segments on the ground */}
+        {/* Tail */}
+        <Sphere args={[0.15, 6, 6]} position={[-0.3, 0, -0.2]}>
+            <meshStandardMaterial color="#ffd600" />
+        </Sphere>
+        {/* Mid 1 */}
+        <Sphere args={[0.18, 6, 6]} position={[-0.15, 0, 0]}>
+            <meshStandardMaterial color="#212121" />
+        </Sphere>
+        {/* Mid 2 */}
+        <Sphere args={[0.18, 6, 6]} position={[0.1, 0, 0.1]}>
+            <meshStandardMaterial color="#ffd600" />
+        </Sphere>
+        {/* Neck */}
+        <Sphere args={[0.16, 6, 6]} position={[0.3, 0.05, 0.2]}>
+            <meshStandardMaterial color="#212121" />
+        </Sphere>
+        {/* Head */}
+        <Box args={[0.2, 0.15, 0.25]} position={[0.45, 0.1, 0.3]} rotation={[0, 0.5, 0]}>
           <meshStandardMaterial color="#ffd600" />
-      </Sphere>
-      {/* Mid 1 */}
-      <Sphere args={[0.18, 6, 6]} position={[-0.15, 0, 0]}>
-          <meshStandardMaterial color="#212121" />
-      </Sphere>
-      {/* Mid 2 */}
-      <Sphere args={[0.18, 6, 6]} position={[0.1, 0, 0.1]}>
-          <meshStandardMaterial color="#ffd600" />
-      </Sphere>
-      {/* Neck */}
-      <Sphere args={[0.16, 6, 6]} position={[0.3, 0.05, 0.2]}>
-          <meshStandardMaterial color="#212121" />
-      </Sphere>
-      {/* Head */}
-      <Box args={[0.2, 0.15, 0.25]} position={[0.45, 0.1, 0.3]} rotation={[0, 0.5, 0]}>
-        <meshStandardMaterial color="#ffd600" />
-      </Box>
-      {/* Tongue */}
-      <Box args={[0.05, 0.02, 0.2]} position={[0.5, 0.1, 0.5]} rotation={[0, 0.5, 0]}>
-         <meshStandardMaterial color="#d50000" />
-      </Box>
-    </group>
+        </Box>
+        {/* Tongue */}
+        <Box args={[0.05, 0.02, 0.2]} position={[0.5, 0.1, 0.5]} rotation={[0, 0.5, 0]}>
+           <meshStandardMaterial color="#d50000" />
+        </Box>
+      </group>
+    </MovingElement>
   </AnimatedElement>
 );
 
 const Parrot = ({ color }: { color: string }) => (
-  <group position={[0, 0, 0]}>
-    {/* Colored Body */}
-    <Box args={[0.15, 0.3, 0.15]} position={[0, 0.15, 0]}>
-      <meshStandardMaterial color={color} />
-    </Box>
-    {/* Head */}
-    <Box args={[0.12, 0.12, 0.12]} position={[0, 0.35, 0.05]}>
-      <meshStandardMaterial color={color} />
-    </Box>
-    {/* Beak */}
-    <Cone args={[0.03, 0.08, 4]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0.35, 0.15]}>
-      <meshStandardMaterial color="#212121" />
-    </Cone>
-    {/* Wing (Darker shade) */}
-    <Box args={[0.05, 0.2, 0.1]} position={[0.1, 0.2, -0.05]}>
-      <meshStandardMaterial color="black" opacity={0.2} transparent />
-    </Box>
-  </group>
+  <MovingElement type="bounce" speed={4} intensity={0.05}>
+    <group position={[0, 0, 0]}>
+      {/* Colored Body */}
+      <Box args={[0.15, 0.3, 0.15]} position={[0, 0.15, 0]}>
+        <meshStandardMaterial color={color} />
+      </Box>
+      {/* Head */}
+      <Box args={[0.12, 0.12, 0.12]} position={[0, 0.35, 0.05]}>
+        <meshStandardMaterial color={color} />
+      </Box>
+      {/* Beak */}
+      <Cone args={[0.03, 0.08, 4]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0.35, 0.15]}>
+        <meshStandardMaterial color="#212121" />
+      </Cone>
+      {/* Wing (Darker shade) */}
+      <Box args={[0.05, 0.2, 0.1]} position={[0.1, 0.2, -0.05]}>
+        <meshStandardMaterial color="black" opacity={0.2} transparent />
+      </Box>
+    </group>
+  </MovingElement>
 );
 
 const Monkey = () => (
-  <group position={[0, 0, 0]}>
-    {/* Body */}
-    <Box args={[0.25, 0.3, 0.2]} position={[0, 0, 0]}>
-      <meshStandardMaterial color="#795548" />
-    </Box>
-    {/* Head */}
-    <Box args={[0.18, 0.18, 0.18]} position={[0, 0.25, 0]}>
-      <meshStandardMaterial color="#5d4037" />
-    </Box>
-    {/* Long Black Tail */}
-    <Box args={[0.05, 0.6, 0.05]} position={[0, -0.2, -0.15]} rotation={[0.5, 0, 0]}>
-      <meshStandardMaterial color="#212121" />
-    </Box>
-    {/* Limbs */}
-    <Box args={[0.06, 0.3, 0.06]} position={[0.15, -0.1, 0]}><meshStandardMaterial color="#5d4037" /></Box>
-    <Box args={[0.06, 0.3, 0.06]} position={[-0.15, -0.1, 0]}><meshStandardMaterial color="#5d4037" /></Box>
-  </group>
+  <MovingElement type="bounce" speed={3} intensity={0.08}>
+    <group position={[0, 0, 0]}>
+      {/* Body */}
+      <Box args={[0.25, 0.3, 0.2]} position={[0, 0, 0]}>
+        <meshStandardMaterial color="#795548" />
+      </Box>
+      {/* Head */}
+      <Box args={[0.18, 0.18, 0.18]} position={[0, 0.25, 0]}>
+        <meshStandardMaterial color="#5d4037" />
+      </Box>
+      {/* Long Black Tail */}
+      <Box args={[0.05, 0.6, 0.05]} position={[0, -0.2, -0.15]} rotation={[0.5, 0, 0]}>
+        <meshStandardMaterial color="#212121" />
+      </Box>
+      {/* Limbs */}
+      <Box args={[0.06, 0.3, 0.06]} position={[0.15, -0.1, 0]}><meshStandardMaterial color="#5d4037" /></Box>
+      <Box args={[0.06, 0.3, 0.06]} position={[-0.15, -0.1, 0]}><meshStandardMaterial color="#5d4037" /></Box>
+    </group>
+  </MovingElement>
 );
 
 // --- Giant Tree (Rare) ---
 const GiantKapok = () => (
-  <group scale={[1, 1.25, 1]}>
-    {/* Buttress Roots */}
-    <Cylinder args={[0.6, 1.2, 1, 5]} position={[0, 0.5, 0]}><meshStandardMaterial color="#4e342e" /></Cylinder>
-    {/* Tall Trunk */}
-    <Cylinder args={[0.4, 0.6, 3, 5]} position={[0, 2.5, 0]}><meshStandardMaterial color="#5d4037" /></Cylinder>
-    {/* Massive Canopy */}
-    <Sphere args={[2, 5, 5]} position={[0, 4, 0]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#2e7d32" flatShading /></Sphere>
-    <Sphere args={[1.5, 5, 5]} position={[1, 4.5, 0.5]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#388e3c" flatShading /></Sphere>
-    <Sphere args={[1.5, 5, 5]} position={[-1, 4.2, -0.5]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#1b5e20" flatShading /></Sphere>
-  </group>
+  <MovingElement type="sway" speed={0.5} intensity={0.02}>
+    <group scale={[1, 1.25, 1]}>
+      {/* Buttress Roots */}
+      <Cylinder args={[0.6, 1.2, 1, 5]} position={[0, 0.5, 0]}><meshStandardMaterial color="#4e342e" /></Cylinder>
+      {/* Tall Trunk */}
+      <Cylinder args={[0.4, 0.6, 3, 5]} position={[0, 2.5, 0]}><meshStandardMaterial color="#5d4037" /></Cylinder>
+      {/* Massive Canopy */}
+      <Sphere args={[2, 5, 5]} position={[0, 4, 0]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#2e7d32" flatShading /></Sphere>
+      <Sphere args={[1.5, 5, 5]} position={[1, 4.5, 0.5]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#388e3c" flatShading /></Sphere>
+      <Sphere args={[1.5, 5, 5]} position={[-1, 4.2, -0.5]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#1b5e20" flatShading /></Sphere>
+    </group>
+  </MovingElement>
 );
 
 // --- Main Island Component ---
@@ -173,82 +183,98 @@ export const RainforestIsland = ({ health }: IslandProps) => {
               
               {/* Type 0: Standard Canopy Tree */}
               {type === 0 && (
-                <group>
-                  <Cylinder args={[0.1, 0.15, 1.8, 5]} position={[0, 0.9, 0]}><meshStandardMaterial color="#3e2723" /></Cylinder>
-                  <Sphere args={[0.6, 5, 5]} position={[0, 1.8, 0]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#2e7d32" flatShading /></Sphere>
-                  {hasParrot && <group position={[0.3, 2.1, 0.2]} rotation={[0, i, 0]}><Parrot color={parrotColor} /></group>}
-                </group>
+                <MovingElement type="sway" speed={0.8} intensity={0.05} offset={i}>
+                  <group>
+                    <Cylinder args={[0.1, 0.15, 1.8, 5]} position={[0, 0.9, 0]}><meshStandardMaterial color="#3e2723" /></Cylinder>
+                    <Sphere args={[0.6, 5, 5]} position={[0, 1.8, 0]} scale={[1, 0.6, 1]}><meshStandardMaterial color="#2e7d32" flatShading /></Sphere>
+                    {hasParrot && <group position={[0.3, 2.1, 0.2]} rotation={[0, i, 0]}><Parrot color={parrotColor} /></group>}
+                  </group>
+                </MovingElement>
               )}
 
               {/* Type 1: Large Fern */}
               {type === 1 && (
-                <group position={[0, 0.2, 0]}>
-                  <Cone args={[0.15, 1.2, 4]} rotation={[0, 0, 0.5]} position={[0.2, 0.2, 0]}><meshStandardMaterial color="#43a047" /></Cone>
-                  <Cone args={[0.15, 1.2, 4]} rotation={[0, 0, -0.5]} position={[-0.2, 0.2, 0]}><meshStandardMaterial color="#43a047" /></Cone>
-                  <Cone args={[0.15, 1.0, 4]} rotation={[0.5, 0, 0]} position={[0, 0.2, 0.2]}><meshStandardMaterial color="#388e3c" /></Cone>
-                </group>
+                <MovingElement type="sway" speed={1.5} intensity={0.08} offset={i}>
+                  <group position={[0, 0.2, 0]}>
+                    <Cone args={[0.15, 1.2, 4]} rotation={[0, 0, 0.5]} position={[0.2, 0.2, 0]}><meshStandardMaterial color="#43a047" /></Cone>
+                    <Cone args={[0.15, 1.2, 4]} rotation={[0, 0, -0.5]} position={[-0.2, 0.2, 0]}><meshStandardMaterial color="#43a047" /></Cone>
+                    <Cone args={[0.15, 1.0, 4]} rotation={[0.5, 0, 0]} position={[0, 0.2, 0.2]}><meshStandardMaterial color="#388e3c" /></Cone>
+                  </group>
+                </MovingElement>
               )}
 
               {/* Type 2: Palm Tree */}
               {type === 2 && (
-                <group>
-                  <Cylinder args={[0.08, 0.12, 2.2, 5]} position={[0, 1.1, 0]} rotation={[0.1, 0, 0]}><meshStandardMaterial color="#5d4037" /></Cylinder>
-                  <group position={[0, 2.1, 0.2]} rotation={[0.1, 0, 0]}>
-                     <Box args={[1.2, 0.05, 0.3]} rotation={[0, 0, 0]}><meshStandardMaterial color="#66bb6a" /></Box>
-                     <Box args={[1.2, 0.05, 0.3]} rotation={[0, 1.5, 0]}><meshStandardMaterial color="#66bb6a" /></Box>
+                <MovingElement type="sway" speed={1} intensity={0.06} offset={i}>
+                  <group>
+                    <Cylinder args={[0.08, 0.12, 2.2, 5]} position={[0, 1.1, 0]} rotation={[0.1, 0, 0]}><meshStandardMaterial color="#5d4037" /></Cylinder>
+                    <group position={[0, 2.1, 0.2]} rotation={[0.1, 0, 0]}>
+                       <Box args={[1.2, 0.05, 0.3]} rotation={[0, 0, 0]}><meshStandardMaterial color="#66bb6a" /></Box>
+                       <Box args={[1.2, 0.05, 0.3]} rotation={[0, 1.5, 0]}><meshStandardMaterial color="#66bb6a" /></Box>
+                    </group>
+                    {hasMonkey && <group position={[0.1, 1.6, 0.1]} rotation={[0, i, 0]}><Monkey /></group>}
                   </group>
-                  {hasMonkey && <group position={[0.1, 1.6, 0.1]} rotation={[0, i, 0]}><Monkey /></group>}
-                </group>
+                </MovingElement>
               )}
 
               {/* Type 3: Multi-tier Canopy */}
               {type === 3 && (
-                <group>
-                   <Cylinder args={[0.15, 0.2, 1.6, 6]} position={[0, 0.8, 0]}><meshStandardMaterial color="#4e342e" /></Cylinder>
-                   <Cone args={[0.7, 0.8, 6]} position={[0, 1.4, 0]}><meshStandardMaterial color="#1b5e20" /></Cone>
-                   <Cone args={[0.5, 0.8, 6]} position={[0, 1.9, 0]}><meshStandardMaterial color="#2e7d32" /></Cone>
-                   {hasParrot && <group position={[-0.2, 2.1, 0]} rotation={[0, -i, 0]}><Parrot color={parrotColor} /></group>}
-                </group>
+                <MovingElement type="sway" speed={0.9} intensity={0.05} offset={i}>
+                  <group>
+                     <Cylinder args={[0.15, 0.2, 1.6, 6]} position={[0, 0.8, 0]}><meshStandardMaterial color="#4e342e" /></Cylinder>
+                     <Cone args={[0.7, 0.8, 6]} position={[0, 1.4, 0]}><meshStandardMaterial color="#1b5e20" /></Cone>
+                     <Cone args={[0.5, 0.8, 6]} position={[0, 1.9, 0]}><meshStandardMaterial color="#2e7d32" /></Cone>
+                     {hasParrot && <group position={[-0.2, 2.1, 0]} rotation={[0, -i, 0]}><Parrot color={parrotColor} /></group>}
+                  </group>
+                </MovingElement>
               )}
 
               {/* Type 4: Banana / Elephant Ear Plant */}
               {type === 4 && (
-                 <group position={[0, 0.4, 0]}>
-                    <Cylinder args={[0.05, 0.08, 0.4]} position={[0, 0.2, 0]}><meshStandardMaterial color="#33691e" /></Cylinder>
-                    {/* Big Leaves */}
-                    <Sphere args={[0.4, 4, 4]} position={[0.3, 0.6, 0]} scale={[0.1, 1, 0.5]} rotation={[0, 0, -0.5]}><meshStandardMaterial color="#7cb342" flatShading /></Sphere>
-                    <Sphere args={[0.4, 4, 4]} position={[-0.3, 0.5, 0.2]} scale={[0.1, 1, 0.5]} rotation={[0, 0, 0.5]}><meshStandardMaterial color="#7cb342" flatShading /></Sphere>
-                 </group>
+                 <MovingElement type="sway" speed={1.8} intensity={0.07} offset={i}>
+                   <group position={[0, 0.4, 0]}>
+                      <Cylinder args={[0.05, 0.08, 0.4]} position={[0, 0.2, 0]}><meshStandardMaterial color="#33691e" /></Cylinder>
+                      {/* Big Leaves */}
+                      <Sphere args={[0.4, 4, 4]} position={[0.3, 0.6, 0]} scale={[0.1, 1, 0.5]} rotation={[0, 0, -0.5]}><meshStandardMaterial color="#7cb342" flatShading /></Sphere>
+                      <Sphere args={[0.4, 4, 4]} position={[-0.3, 0.5, 0.2]} scale={[0.1, 1, 0.5]} rotation={[0, 0, 0.5]}><meshStandardMaterial color="#7cb342" flatShading /></Sphere>
+                   </group>
+                 </MovingElement>
               )}
 
               {/* Type 5: Vine Tree */}
               {type === 5 && (
-                <group>
-                   <Cylinder args={[0.1, 0.12, 2.5, 5]} position={[0, 1.25, 0]}><meshStandardMaterial color="#3e2723" /></Cylinder>
-                   {/* Vines wrapping around */}
-                   <Torus args={[0.14, 0.04, 6, 8]} position={[0, 0.5, 0]} rotation={[Math.PI/2, 0.2, 0]}><meshStandardMaterial color="#2e7d32" /></Torus>
-                   <Torus args={[0.13, 0.04, 6, 8]} position={[0, 1.5, 0]} rotation={[Math.PI/2, -0.2, 0]}><meshStandardMaterial color="#2e7d32" /></Torus>
-                   <Sphere args={[0.5, 5, 5]} position={[0, 2.5, 0]} scale={[1, 0.8, 1]}><meshStandardMaterial color="#388e3c" flatShading /></Sphere>
-                   {hasParrot && <group position={[0, 2.8, 0]} rotation={[0, i, 0]}><Parrot color={parrotColor} /></group>}
-                </group>
+                <MovingElement type="sway" speed={0.7} intensity={0.04} offset={i}>
+                  <group>
+                     <Cylinder args={[0.1, 0.12, 2.5, 5]} position={[0, 1.25, 0]}><meshStandardMaterial color="#3e2723" /></Cylinder>
+                     {/* Vines wrapping around */}
+                     <Torus args={[0.14, 0.04, 6, 8]} position={[0, 0.5, 0]} rotation={[Math.PI/2, 0.2, 0]}><meshStandardMaterial color="#2e7d32" /></Torus>
+                     <Torus args={[0.13, 0.04, 6, 8]} position={[0, 1.5, 0]} rotation={[Math.PI/2, -0.2, 0]}><meshStandardMaterial color="#2e7d32" /></Torus>
+                     <Sphere args={[0.5, 5, 5]} position={[0, 2.5, 0]} scale={[1, 0.8, 1]}><meshStandardMaterial color="#388e3c" flatShading /></Sphere>
+                     {hasParrot && <group position={[0, 2.8, 0]} rotation={[0, i, 0]}><Parrot color={parrotColor} /></group>}
+                  </group>
+                </MovingElement>
               )}
 
               {/* Type 6: Dense Bush */}
               {type === 6 && (
-                 <group position={[0, 0.3, 0]}>
-                    <Sphere args={[0.5, 5, 5]} position={[0, 0, 0]}><meshStandardMaterial color="#1b5e20" flatShading /></Sphere>
-                    <Sphere args={[0.4, 5, 5]} position={[0.4, 0.2, 0]}><meshStandardMaterial color="#2e7d32" flatShading /></Sphere>
-                    <Sphere args={[0.4, 5, 5]} position={[-0.3, 0.1, 0.3]}><meshStandardMaterial color="#33691e" flatShading /></Sphere>
-                 </group>
+                 <MovingElement type="sway" speed={1.5} intensity={0.06} offset={i}>
+                   <group position={[0, 0.3, 0]}>
+                      <Sphere args={[0.5, 5, 5]} position={[0, 0, 0]}><meshStandardMaterial color="#1b5e20" flatShading /></Sphere>
+                      <Sphere args={[0.4, 5, 5]} position={[0.4, 0.2, 0]}><meshStandardMaterial color="#2e7d32" flatShading /></Sphere>
+                      <Sphere args={[0.4, 5, 5]} position={[-0.3, 0.1, 0.3]}><meshStandardMaterial color="#33691e" flatShading /></Sphere>
+                   </group>
+                 </MovingElement>
               )}
 
               {/* Type 7: Tall Grass Clump */}
               {type === 7 && (
-                 <group position={[0, 0, 0]}>
-                    <Cone args={[0.05, 0.6, 3]} position={[0, 0.3, 0]} rotation={[0.2, 0, 0]}><meshStandardMaterial color="#8bc34a" /></Cone>
-                    <Cone args={[0.05, 0.5, 3]} position={[0.1, 0.25, 0]} rotation={[-0.2, 0, 0.2]}><meshStandardMaterial color="#9ccc65" /></Cone>
-                    <Cone args={[0.05, 0.7, 3]} position={[-0.1, 0.35, 0.1]} rotation={[0, 0, -0.2]}><meshStandardMaterial color="#7cb342" /></Cone>
-                 </group>
+                 <MovingElement type="sway" speed={2.5} intensity={0.12} offset={i}>
+                   <group position={[0, 0, 0]}>
+                      <Cone args={[0.05, 0.6, 3]} position={[0, 0.3, 0]} rotation={[0.2, 0, 0]}><meshStandardMaterial color="#8bc34a" /></Cone>
+                      <Cone args={[0.05, 0.5, 3]} position={[0.1, 0.25, 0]} rotation={[-0.2, 0, 0.2]}><meshStandardMaterial color="#9ccc65" /></Cone>
+                      <Cone args={[0.05, 0.7, 3]} position={[-0.1, 0.35, 0.1]} rotation={[0, 0, -0.2]}><meshStandardMaterial color="#7cb342" /></Cone>
+                   </group>
+                 </MovingElement>
               )}
 
             </AnimatedElement>

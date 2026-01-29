@@ -74,6 +74,47 @@ export const AnimatedElement = ({
   );
 };
 
+// --- Animation Helper ---
+
+export const MovingElement = ({ 
+  type, 
+  speed = 1, 
+  intensity = 0.1, 
+  offset = 0,
+  children 
+}: { 
+  type: 'sway' | 'bounce' | 'breathe', 
+  speed?: number, 
+  intensity?: number, 
+  offset?: number,
+  children: React.ReactNode 
+}) => {
+  const ref = useRef<THREE.Group>(null);
+  const randomOffset = React.useMemo(() => Math.random() * 100, []);
+
+  useFrame(({ clock }) => {
+    if (ref.current) {
+      const t = clock.elapsedTime + randomOffset + offset;
+      
+      if (type === 'sway') {
+        // Wind effect for trees/plants
+        ref.current.rotation.z = Math.sin(t * speed) * intensity;
+        ref.current.rotation.x = Math.cos(t * speed * 0.7) * (intensity * 0.5);
+      } else if (type === 'bounce') {
+        // Hopping effect
+        ref.current.position.y = Math.abs(Math.sin(t * speed)) * intensity;
+      } else if (type === 'breathe') {
+        // Subtle expansion for large animals
+        const s = 1 + Math.sin(t * speed) * intensity;
+        ref.current.scale.set(1, s, 1);
+      }
+    }
+  });
+
+  return <group ref={ref}>{children}</group>;
+};
+
+
 
 // Low Poly Animal Component (Also animates visibility!)
 export const SimpleAnimal = ({ position, rotation, isVisible }: { position: [number, number, number], rotation: number, isVisible: boolean }) => (
