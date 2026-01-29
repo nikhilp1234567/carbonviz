@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Box } from '@react-three/drei';
+import { Box, Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
 
 // --- Shared Types & Helpers ---
@@ -11,13 +11,22 @@ export interface IslandProps {
   health: number; // 0.0 (Dead/Barren) to 1.0 (Lush/Full)
 }
 
+// Central Configuration for Island Size & Shape
+export const ISLAND_CONFIG = {
+  radius: 8,           // Base radius of the island
+  height: 2,           // Height of the land mass
+  segments: 64,        // Smoothness of the circle
+  contentRadius: 7.5,  // Max radius for flora placement (slightly inside edge)
+  faunaRadius: 6.5,    // Max radius for animal movement (further inside)
+};
+
 // Helper: Stable random number generator to keep positions fixed across re-renders
 export const seededRandom = (seed: number) => {
   const x = Math.sin(seed++) * 10000;
   return x - Math.floor(x);
 };
 
-// Generate fixed positions once
+// Generate fixed positions once (Square/Box distribution)
 export const getStablePositions = (count: number, size: number, seedOffset: number) => {
   return Array.from({ length: count }).map((_, i) => {
     let seed = i * 1357 + seedOffset; // specific seed for this index
@@ -30,6 +39,27 @@ export const getStablePositions = (count: number, size: number, seedOffset: numb
     // Calculate a "threshold" for this item. 
     // If health > threshold, this item is visible.
     // We shuffle the threshold distribution so items disappear randomly, not just from one side.
+    const threshold = seededRandom(seed++); 
+
+    return { position: [x, 0, z] as [number, number, number], scale, rotation, variant, threshold };
+  });
+};
+
+// Generate fixed positions in a Circle
+export const getCircularPositions = (count: number, radius: number, seedOffset: number) => {
+  return Array.from({ length: count }).map((_, i) => {
+    let seed = i * 1357 + seedOffset; 
+    
+    // Polar coordinates for uniform circular distribution
+    const r = Math.sqrt(seededRandom(seed++)) * radius;
+    const theta = seededRandom(seed++) * Math.PI * 2;
+
+    const x = r * Math.cos(theta);
+    const z = r * Math.sin(theta);
+
+    const scale = 0.6 + seededRandom(seed++) * 0.6;
+    const rotation = seededRandom(seed++) * Math.PI * 2;
+    const variant = Math.floor(seededRandom(seed++) * 3);
     const threshold = seededRandom(seed++); 
 
     return { position: [x, 0, z] as [number, number, number], scale, rotation, variant, threshold };
@@ -138,7 +168,17 @@ export const SimpleAnimal = ({ position, rotation, isVisible }: { position: [num
 );
 
 // Island Base - changes color slightly based on health?
-export const IslandBase = ({ color, size = 12, height = 2, health }: { color: string, size?: number, height?: number, health: number }) => {
+export const IslandBase = ({ 
+  color, 
+  size = ISLAND_CONFIG.radius * 2, 
+  height = ISLAND_CONFIG.height, 
+  health 
+}: { 
+  color: string, 
+  size?: number, 
+  height?: number, 
+  health: number 
+}) => {
    // Mix color with "dead" color (brown/grey) based on health
    const baseColor = new THREE.Color(color);
    const deadColor = new THREE.Color("#8d6e63"); // Dry dirt
@@ -147,13 +187,13 @@ export const IslandBase = ({ color, size = 12, height = 2, health }: { color: st
    return (
     <group>
       {/* Top Surface */}
-      <Box args={[size, height, size]} position={[0, -height/2, 0]}>
+      <Cylinder args={[size / 2, size / 2, height, ISLAND_CONFIG.segments]} position={[0, -height/2, 0]}>
         <meshStandardMaterial color={finalColor} roughness={0.8} />
-      </Box>
+      </Cylinder>
       {/* Underside */}
-      <Box args={[size * 0.9, height * 1.5, size * 0.9]} position={[0, -height - (height * 1.5)/2 + 0.1, 0]}>
+      <Cylinder args={[size * 0.45, size * 0.2, height * 1.5, ISLAND_CONFIG.segments]} position={[0, -height - (height * 1.5)/2 + 0.1, 0]}>
         <meshStandardMaterial color="#5d4037" roughness={1} />
-      </Box>
+      </Cylinder>
     </group>
    );
 };

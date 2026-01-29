@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { Cone, Cylinder, Sphere, Box, Torus } from '@react-three/drei';
-import { IslandProps, getStablePositions, IslandBase, AnimatedElement, MovingElement } from './Shared';
+import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, MovingElement, ISLAND_CONFIG } from './Shared';
 
 // --- Wildlife Components ---
 
@@ -136,11 +136,11 @@ const GiantKapok = () => (
 export const RainforestIsland = ({ health }: IslandProps) => {
   // Generate stable positions for flora
   // Modulo 8 used below for variety
-  const items = useMemo(() => getStablePositions(160, 11, 300), []);
+  const items = useMemo(() => getCircularPositions(160, ISLAND_CONFIG.contentRadius, 300), []);
   
   // Generate ground animals
   const groundAnimals = useMemo(() => {
-    const raw = getStablePositions(10, 10, 888);
+    const raw = getCircularPositions(10, ISLAND_CONFIG.faunaRadius, 888);
     return raw.map((item, i) => ({
       ...item,
       type: i % 2 === 0 ? 'jaguar' : 'snake'
@@ -149,7 +149,7 @@ export const RainforestIsland = ({ health }: IslandProps) => {
 
   return (
     <group>
-      <IslandBase color="#1b5e20" size={12} health={health} />
+      <IslandBase color="#1b5e20" health={health} />
       
       {/* FLORA LAYERS */}
       {items.map((item, i) => {

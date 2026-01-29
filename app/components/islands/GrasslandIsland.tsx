@@ -3,7 +3,7 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Cone, Cylinder, Sphere, Box } from '@react-three/drei';
-import { IslandProps, getStablePositions, IslandBase, AnimatedElement } from './Shared';
+import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, ISLAND_CONFIG } from './Shared';
 import * as THREE from 'three';
 
 // --- Animation Helper ---
@@ -211,14 +211,14 @@ const WildflowerPatch = () => (
 
 export const GrasslandIsland = ({ health }: IslandProps) => {
   // 1. CARPET LAYER: 800 small items to cover the ground
-  const carpet = useMemo(() => getStablePositions(800, 11.8, 800), []);
+  const carpet = useMemo(() => getCircularPositions(800, ISLAND_CONFIG.contentRadius + 0.3, 800), []);
 
   // 2. FLORA LAYER: 350 larger items (Tall stuff)
-  const items = useMemo(() => getStablePositions(350, 11.5, 450), []);
+  const items = useMemo(() => getCircularPositions(350, ISLAND_CONFIG.contentRadius + 0.1, 450), []);
   
   // 3. FAUNA LAYER: 10 animals
   const fauna = useMemo(() => {
-    const raw = getStablePositions(10, 10, 600);
+    const raw = getCircularPositions(10, ISLAND_CONFIG.faunaRadius, 600);
     return raw.map((item, i) => ({
       ...item,
       // Distribute types: 0=Bison, 1=Elk, 2=Bear
@@ -229,7 +229,7 @@ export const GrasslandIsland = ({ health }: IslandProps) => {
   return (
     <group>
       {/* Lighter Green Base for Prairie */}
-      <IslandBase color="#c5e1a5" size={12} health={health} />
+      <IslandBase color="#c5e1a5" health={health} />
       
       {/* CARPET LAYER (Rendered first, lowest) */}
       {carpet.map((item, i) => (

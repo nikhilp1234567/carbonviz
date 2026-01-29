@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { Cone, Cylinder, Sphere, Box } from '@react-three/drei';
-import { IslandProps, getStablePositions, IslandBase, AnimatedElement, MovingElement } from './Shared';
+import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, MovingElement, ISLAND_CONFIG } from './Shared';
 
 // --- Wildlife Components ---
 
@@ -89,12 +89,12 @@ const Wolf = ({ isVisible }: { isVisible: boolean }) => (
 
 export const ForestIsland = ({ health }: IslandProps) => {
   // Generate more items for density and variety
-  const items = useMemo(() => getStablePositions(180, 11, 150), []); 
+  const items = useMemo(() => getCircularPositions(180, ISLAND_CONFIG.contentRadius, 150), []); 
   
   // Separate list for ground animals
   const groundAnimals = useMemo(() => {
     // Generate 8 animals
-    const raw = getStablePositions(8, 9, 999);
+    const raw = getCircularPositions(8, ISLAND_CONFIG.faunaRadius, 999);
     return raw.map((item, i) => ({
       ...item,
       type: i % 2 === 0 ? 'wolf' : 'bear' // Alternating types
@@ -103,7 +103,7 @@ export const ForestIsland = ({ health }: IslandProps) => {
 
   return (
     <group>
-      <IslandBase color="#558b2f" size={12} health={health} />
+      <IslandBase color="#558b2f" health={health} />
       
       {/* FLORA LAYERS */}
       {items.map((item, i) => {

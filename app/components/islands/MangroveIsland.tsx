@@ -3,7 +3,7 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Box, Cylinder, Sphere, Cone } from '@react-three/drei';
-import { IslandProps, getStablePositions, AnimatedElement } from './Shared';
+import { IslandProps, getStablePositions, getCircularPositions, AnimatedElement, ISLAND_CONFIG } from './Shared';
 import * as THREE from 'three';
 
 // --- Assets ---
@@ -143,25 +143,26 @@ const FishSchool = ({ isVisible, color }: { isVisible: boolean, color: string })
 
 export const MangroveIsland = ({ health }: IslandProps) => {
   
+  const waterRadius = ISLAND_CONFIG.radius + 1;
+  const beachRadius = ISLAND_CONFIG.radius * 0.7;
+
   // 1. Trees: Positioned on Beach (inner) AND in Water (outer)
-  // Beach radius is ~3.5. We generate trees from radius 1.5 to 6.5.
+  // Beach radius is ~5.6. We generate trees from radius 2.5 to 8.5 (water edge).
   const trees = useMemo(() => {
-    const all = getStablePositions(90, 11, 600);
+    const all = getCircularPositions(90, waterRadius, 600);
     return all.filter(p => {
        const r = Math.sqrt(p.position[0]**2 + p.position[2]**2);
        // Keep trees that are not in the very center (clear for animals) but extend out to water
-       return r > 1.5 && r < 6.5;
+       return r > 2.5 && r < (waterRadius - 0.5);
     });
   }, []);
 
-  // 2. Beach Fauna: On the sand (radius < 3.2)
+  // 2. Beach Fauna: On the sand (radius < 4.5)
   const beachFauna = useMemo(() => {
-    const all = getStablePositions(10, 5, 202); 
+    const all = getCircularPositions(10, beachRadius * 0.8, 202); 
     return all.map((p, i) => ({
       ...p,
       type: i % 2 === 0 ? 'crab' : 'turtle',
-      // Clamp positions to ensure they stay on the beach island
-      position: [p.position[0] * 0.5, 0.2, p.position[2] * 0.5] as [number, number, number]
     }));
   }, []);
 
@@ -171,16 +172,16 @@ export const MangroveIsland = ({ health }: IslandProps) => {
       {/* --- TERRAIN --- */}
       
       {/* 1. Deep Water Base (Emerald) */}
-      <Box args={[14, 1.5, 14]} position={[0, -1.0, 0]}>
+      <Cylinder args={[waterRadius, waterRadius, 1.5, 64]} position={[0, -1.0, 0]}>
          <meshStandardMaterial color="#004d40" opacity={0.8} transparent roughness={0.1} />
-      </Box>
+      </Cylinder>
       
       {/* 2. Central Sandy Beach Island */}
-      <Cylinder args={[3.5, 4.5, 2, 8]} position={[0, -0.8, 0]}>
+      <Cylinder args={[beachRadius, beachRadius + 1, 2, 64]} position={[0, -0.8, 0]}>
          <meshStandardMaterial color="#eebb99" />
       </Cylinder>
       {/* Beach Top Layer */}
-      <Cylinder args={[3.5, 3.5, 0.1, 8]} position={[0, 0.2, 0]}>
+      <Cylinder args={[beachRadius, beachRadius, 0.1, 64]} position={[0, 0.2, 0]}>
          <meshStandardMaterial color="#ffccbc" />
       </Cylinder>
 
@@ -210,7 +211,7 @@ export const MangroveIsland = ({ health }: IslandProps) => {
       {/* --- FAUNA (Water) --- */}
       
       {/* Shark Lane 1 */}
-      <SwimmingGroup radius={6} speed={0.4} reverse={false}>
+      <SwimmingGroup radius={waterRadius - 1} speed={0.4} reverse={false}>
          <group rotation={[0, Math.PI, 0]}> 
             <Shark isVisible={health > 0.4} />
          </group>
@@ -218,7 +219,7 @@ export const MangroveIsland = ({ health }: IslandProps) => {
 
       {/* Shark Lane 2 (Offset) */}
       <group rotation={[0, 2, 0]}>
-        <SwimmingGroup radius={7} speed={0.3} reverse={true}>
+        <SwimmingGroup radius={waterRadius} speed={0.3} reverse={true}>
           <group rotation={[0, 0, 0]}> 
               <Shark isVisible={health > 0.7} />
           </group>
@@ -227,14 +228,14 @@ export const MangroveIsland = ({ health }: IslandProps) => {
 
       {/* Fish School 1 */}
       <group rotation={[0, 1, 0]}>
-        <SwimmingGroup radius={5} speed={0.6}>
+        <SwimmingGroup radius={waterRadius - 2} speed={0.6}>
            <FishSchool isVisible={health > 0.3} color="#ffeb3b" />
         </SwimmingGroup>
       </group>
 
       {/* Fish School 2 */}
       <group rotation={[0, 3, 0]}>
-        <SwimmingGroup radius={5.5} speed={0.7} reverse>
+        <SwimmingGroup radius={waterRadius - 1.5} speed={0.7} reverse>
            <FishSchool isVisible={health > 0.6} color="#03a9f4" />
         </SwimmingGroup>
       </group>

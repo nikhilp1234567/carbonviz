@@ -3,7 +3,7 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Box, Sphere, Cone, Cylinder } from '@react-three/drei';
-import { IslandProps, getStablePositions, IslandBase, AnimatedElement } from './Shared';
+import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, ISLAND_CONFIG } from './Shared';
 import * as THREE from 'three';
 
 // --- Animation Helper ---
@@ -187,14 +187,14 @@ const MossPatch = ({ scale }: { scale: number }) => (
 
 export const PeatlandIsland = ({ health }: IslandProps) => {
   // 1. Surface Details (Puddles & Moss) - "Painted" on the flat ground
-  const details = useMemo(() => getStablePositions(60, 11, 800), []);
+  const details = useMemo(() => getCircularPositions(60, ISLAND_CONFIG.contentRadius, 800), []);
   
   // 2. Plants - Placed on top of ground (y=0)
-  const plants = useMemo(() => getStablePositions(180, 11, 450), []);
+  const plants = useMemo(() => getCircularPositions(180, ISLAND_CONFIG.contentRadius, 450), []);
   
   // 3. Fauna - Placed on top of ground (y=0)
   const animals = useMemo(() => {
-     const all = getStablePositions(12, 9, 202);
+     const all = getCircularPositions(12, ISLAND_CONFIG.faunaRadius - 0.5, 202);
      return all.map((p, i) => ({
        ...p,
        type: i % 3 // 0: Beaver, 1: Bird, 2: Fox
@@ -204,7 +204,7 @@ export const PeatlandIsland = ({ health }: IslandProps) => {
   return (
     <group>
       {/* 1. SOLID FLAT BASE (No Mounds = No Clipping) */}
-      <IslandBase color="#3e2723" size={12} health={health} />
+      <IslandBase color="#3e2723" health={health} />
 
       {/* 2. TERRAIN DETAILS (Flat discs on surface) */}
       {details.map((item, i) => {
