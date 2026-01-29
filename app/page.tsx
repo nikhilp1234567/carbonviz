@@ -15,13 +15,13 @@ const MAX_ANNUAL_TONNES = 35;
 export default function Home() {
   const [options, setOptions] = useState<UserOptions>({
     householdSize: '1',
-    homeSize: 'Medium',
-    carUsage: 'Average',
-    flightFrequency: 'Occasional',
-    diet: 'Average',
-    recycling: 'Some',
-    publicTransport: 'Occasional',
-    shopping: 'Average'
+    homeSize: 'Small',
+    carUsage: 'None',
+    flightFrequency: 'None',
+    diet: 'Vegan',
+    recycling: 'Diligent',
+    publicTransport: 'None',
+    shopping: 'Minimal'
   });
 
   const [activeTab, setActiveTab] = useState<Ecosystem>('Forest');
@@ -30,11 +30,28 @@ export default function Home() {
   const { totalKg, totalTonnes } = calculateCarbon(inputs);
   const restoration = calculateRestoration(totalKg, activeTab);
 
-  // LOGIC FIX: Inverted the relationship.
-  // Previously: High Carbon = Low Health (Dead Island).
-  // Now: High Carbon = High Density (More trees needed to restore).
-  // We clamp it so there's always a few trees (0.1) and it caps at 1.0.
-  const visualDensity = Math.min(1, Math.max(0.1, totalTonnes / MAX_ANNUAL_TONNES));
+  // LOGIC FIX: Inverted again per user request.
+  // Low Carbon = High Density (Lush/Healthy).
+  // High Carbon = Low Density (Destroyed).
+  // 0 tonnes -> 1.0 density. MAX -> 0.1 density.
+  const visualDensity = Math.max(0.1, Math.min(1, 1 - (totalTonnes / MAX_ANNUAL_TONNES)));
+
+  // Dynamic Color Logic for Stats Card
+  let cardColorClass = "bg-emerald-900/80 border-emerald-700/30 ring-emerald-400/20 hover:bg-emerald-900/90";
+  let titleColorClass = "text-emerald-300";
+  let badgeColorClass = "bg-emerald-800/50 text-emerald-200 border-emerald-700/50";
+
+  if (totalTonnes > 20) {
+     // High Impact -> Red
+     cardColorClass = "bg-red-900/80 border-red-700/30 ring-red-400/20 hover:bg-red-900/90";
+     titleColorClass = "text-red-300";
+     badgeColorClass = "bg-red-800/50 text-red-200 border-red-700/50";
+  } else if (totalTonnes > 8) {
+     // Medium Impact -> Yellow/Orange
+     cardColorClass = "bg-yellow-900/80 border-yellow-700/30 ring-yellow-400/20 hover:bg-yellow-900/90";
+     titleColorClass = "text-yellow-300";
+     badgeColorClass = "bg-yellow-800/50 text-yellow-200 border-yellow-700/50";
+  }
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-gradient-to-b from-blue-50 via-teal-50 to-emerald-50 text-gray-800 font-sans">
@@ -71,17 +88,17 @@ export default function Home() {
              </div>
 
              {/* 2. Restoration Stats (Moved below Calculator) */}
-             <div className="bg-emerald-900/80 backdrop-blur-xl shadow-2xl rounded-3xl p-6 text-white w-full border border-emerald-700/30 ring-1 ring-emerald-400/20 transition-all hover:bg-emerald-900/90">
+             <div className={`backdrop-blur-xl shadow-2xl rounded-3xl p-6 text-white w-full border ring-1 transition-all ${cardColorClass}`}>
                 <div className="flex justify-between items-end md:block md:text-right">
                   <div>
-                    <h4 className="text-emerald-300 text-[10px] font-bold uppercase tracking-widest mb-2 opacity-80">To Neutralize You Need</h4>
+                    <h4 className={`${titleColorClass} text-[10px] font-bold uppercase tracking-widest mb-2 opacity-80`}>Your Impact Equivalent</h4>
                     <div className="text-5xl font-black leading-none mb-1 tracking-tight">
                       {restoration.count.toLocaleString()}
                     </div>
-                    <div className="text-lg font-bold text-emerald-100">{restoration.unit}</div>
+                    <div className="text-lg font-bold text-white/90">{restoration.unit} Destroyed / Yr</div>
                   </div>
-                  <div className="mt-0 md:mt-3 inline-block bg-emerald-800/50 rounded-lg px-3 py-1 text-xs text-emerald-200 font-medium border border-emerald-700/50">
-                     Restored {activeTab}
+                  <div className={`mt-0 md:mt-3 inline-block rounded-lg px-3 py-1 text-xs font-medium border ${badgeColorClass}`}>
+                     {activeTab} Loss
                   </div>
                 </div>
              </div>
