@@ -79,11 +79,11 @@ export const convertUserOptionsToInputs = (options: UserOptions): CarbonInputs =
   }
   
   // 6. Public Transport (kg CO2e per year)
-  // None: 0, Occasional: 200, Frequent: 800
+  // None: 0, Occasional: 200, Frequent: 500
   switch (options.publicTransport) {
     case 'None': publicTransport = 0; break;
     case 'Occasional': publicTransport = 200; break;
-    case 'Frequent': publicTransport = 800; break;
+    case 'Frequent': publicTransport = 500; break;
   }
 
   // 7. Shopping Habits (kg CO2e per year - embedded carbon)
@@ -102,7 +102,7 @@ export const calculateCarbon = (inputs: CarbonInputs) => {
   const electricityKg = inputs.electricity * 12 * 0.4; // ~0.4 kg per kWh
   const gasKg = inputs.gas * 12 * 5.3; // ~5.3 kg per therm
   const carKg = inputs.mileage * 0.404; // ~404g per mile
-  const flightKg = inputs.flights * 90; // ~90kg per hour
+  const flightKg = inputs.flights * 180; // ~180kg per hour (w/ radiative forcing)
   const dietKg = inputs.diet;
   const recyclingKg = inputs.recycling;
   const publicTransportKg = inputs.publicTransport;
@@ -118,15 +118,15 @@ export const calculateRestoration = (totalKg: number, type: Ecosystem) => {
   // Absorption rates per year
   switch (type) {
     case 'Forest':
-      return { count: Math.ceil(totalKg / 20), unit: 'Trees', label: 'Trees Needed' };
+      return { count: Math.ceil(totalKg / 20), unit: 'Trees', label: 'Trees to Offset' };
     case 'Rainforest':
-      return { count: Math.ceil(totalKg / 25), unit: 'Trees', label: 'Rainforest Trees' };
+      return { count: Math.ceil(totalKg / 25), unit: 'Trees', label: 'Trees to Offset' };
     case 'Mangrove':
-      return { count: Math.ceil(totalKg / 30), unit: 'Trees', label: 'Mangroves' };
+      return { count: Math.ceil(totalKg / 30), unit: 'Trees', label: 'Trees to Offset' };
     case 'Peatland':
-      return { count: Math.ceil(totalKg / 1.5), unit: 'm²', label: 'Area to Restore' };
+      return { count: Math.ceil(totalKg / 0.4), unit: 'm²', label: 'm² to Restore' };
     case 'Grassland':
-      return { count: Math.ceil(totalKg / 0.5), unit: 'm²', label: 'Area to Restore' };
+      return { count: Math.ceil(totalKg / 0.15), unit: 'm²', label: 'm² to Restore' };
     default:
       return { count: 0, unit: 'Units', label: 'Units' };
   }

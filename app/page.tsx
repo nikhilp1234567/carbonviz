@@ -5,6 +5,8 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Float } from '@react-three/drei';
 import CarbonCalculator from './components/CarbonCalculator';
 import { ForestIsland, RainforestIsland, MangroveIsland, PeatlandIsland, GrasslandIsland } from './components/Islands';
+import LoadingSpinner from './components/LoadingSpinner';
+import Logo from './components/Logo';
 import { calculateCarbon, calculateRestoration, convertUserOptionsToInputs, UserOptions, Ecosystem } from './utils/carbon';
 
 const ECOSYSTEMS: Ecosystem[] = ['Forest', 'Rainforest', 'Mangrove', 'Peatland', 'Grassland'];
@@ -69,7 +71,8 @@ export default function Home() {
              <div className="bg-white/40 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-6 transition-all duration-300 hover:bg-white/50 ring-1 ring-white/20">
                 <div className="mb-6 border-b border-gray-200/20 pb-4">
                   <h1 className="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-2">
-                    Carbon<span className="text-emerald-600">Viz</span>
+                    <Logo className="w-10 h-10 text-emerald-600" />
+                    <span>Carbon<span className="text-emerald-600">Viz</span></span>
                   </h1>
                   <p className="text-sm text-gray-500 font-medium ml-1">Restoration Visualizer</p>
                 </div>
@@ -95,10 +98,10 @@ export default function Home() {
                     <div className="text-5xl font-black leading-none mb-1 tracking-tight">
                       {restoration.count.toLocaleString()}
                     </div>
-                    <div className="text-lg font-bold text-white/90">{restoration.unit} Destroyed / Yr</div>
+                    <div className="text-lg font-bold text-white/90">{restoration.label}</div>
                   </div>
                   <div className={`mt-0 md:mt-3 inline-block rounded-lg px-3 py-1 text-xs font-medium border ${badgeColorClass}`}>
-                     {activeTab} Loss
+                     {activeTab}
                   </div>
                 </div>
              </div>
@@ -129,15 +132,16 @@ export default function Home() {
 
       {/* --- 3D SCENE LAYER --- */}
       <div className="absolute inset-0 z-0">
-        <Canvas shadows camera={{ position: [15, 12, 15], fov: 35 }}>
-           <Suspense fallback={null}>
+        <Canvas shadows dpr={[1, 2]} camera={{ position: [15, 12, 15], fov: 35 }} gl={{ preserveDrawingBuffer: true }}>
+           <Suspense fallback={<LoadingSpinner />}>
             <Environment preset="park" />
             <ambientLight intensity={0.6} />
             <directionalLight 
               position={[10, 20, 10]} 
               intensity={1.5} 
               castShadow 
-              shadow-mapSize={[2048, 2048]} 
+              shadow-mapSize={[1024, 1024]} 
+              shadow-bias={-0.0001}
             />
             
             <OrbitControls 
@@ -162,7 +166,7 @@ export default function Home() {
               </group>
             </Float>
 
-            <ContactShadows position={[0, -5, 0]} opacity={0.3} scale={40} blur={2.5} far={10} color="#004d40" />
+            <ContactShadows position={[0, -5, 0]} opacity={0.3} scale={40} blur={2.5} far={10} resolution={256} color="#004d40" />
            </Suspense>
         </Canvas>
       </div>

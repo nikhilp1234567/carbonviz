@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <path d="M24.5 25H7.5C4.46 25 2 22.54 2 19.5C2 16.65 4.17 14.29 6.94 14.05C7.53 9.87 11.13 6.5 15.5 6.5C19.87 6.5 23.47 9.87 24.06 14.05C26.83 14.29 29 16.65 29 19.5C29 22.54 26.54 25 24.5 25Z" stroke="#059669" stroke-width="2.5" fill="#ECFDF5"/>
+  <text x="16" y="20" font-family="sans-serif" font-weight="bold" font-size="9" text-anchor="middle" fill="#059669">CO₂</text>
+</svg>
