@@ -113,7 +113,7 @@ export const MovingElement = ({
   offset = 0,
   children 
 }: { 
-  type: 'sway' | 'bounce' | 'breathe', 
+  type: 'sway' | 'bounce' | 'breathe' | 'hop', 
   speed?: number, 
   intensity?: number, 
   offset?: number,
@@ -137,35 +137,20 @@ export const MovingElement = ({
         // Subtle expansion for large animals
         const s = 1 + Math.sin(t * speed) * intensity;
         ref.current.scale.set(1, s, 1);
+      } else if (type === 'hop') {
+        // Occasional hop (from Peatland/Grassland)
+        const hop = Math.abs(Math.sin(t * speed));
+        if (hop > 0.8) {
+           ref.current.position.y = (hop - 0.8) * intensity * 2;
+        } else {
+           ref.current.position.y = 0;
+        }
       }
     }
   });
 
   return <group ref={ref}>{children}</group>;
 };
-
-
-
-// Low Poly Animal Component (Also animates visibility!)
-export const SimpleAnimal = ({ position, rotation, isVisible }: { position: [number, number, number], rotation: number, isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.4}>
-    <group position={position} rotation={[0, rotation, 0]}>
-      {/* Body */}
-      <Box args={[1, 0.6, 1.4]} position={[0, 0.6, 0]}>
-        <meshStandardMaterial color="#e65100" />
-      </Box>
-      {/* Head */}
-      <Box args={[0.5, 0.5, 0.6]} position={[0, 1.1, 0.6]}>
-        <meshStandardMaterial color="#e65100" />
-      </Box>
-      {/* Legs */}
-      <Box args={[0.2, 0.6, 0.2]} position={[-0.3, 0.3, 0.5]}><meshStandardMaterial color="#3e2723" /></Box>
-      <Box args={[0.2, 0.6, 0.2]} position={[0.3, 0.3, 0.5]}><meshStandardMaterial color="#3e2723" /></Box>
-      <Box args={[0.2, 0.6, 0.2]} position={[-0.3, 0.3, -0.5]}><meshStandardMaterial color="#3e2723" /></Box>
-      <Box args={[0.2, 0.6, 0.2]} position={[0.3, 0.3, -0.5]}><meshStandardMaterial color="#3e2723" /></Box>
-    </group>
-  </AnimatedElement>
-);
 
 // Island Base - changes color slightly based on health?
 export const IslandBase = ({ 

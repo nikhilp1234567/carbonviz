@@ -5,6 +5,10 @@ import { useFrame } from '@react-three/fiber';
 import { Box, Cylinder, Sphere, Cone } from '@react-three/drei';
 import { IslandProps, getStablePositions, getCircularPositions, AnimatedElement, ISLAND_CONFIG } from './Shared';
 import * as THREE from 'three';
+import { Crab } from '../animals/Crab';
+import { Turtle } from '../animals/Turtle';
+import { Shark } from '../animals/Shark';
+import { FishSchool } from '../animals/FishSchool';
 
 // --- Assets ---
 
@@ -77,31 +81,6 @@ const MangroveTree = ({ variant }: { variant: number }) => {
    return <MangroveBushy />;
 };
 
-const Crab = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.25}>
-    <group position={[0,1.5, 0]}>
-       <Box args={[0.5, 0.2, 0.4]}><meshStandardMaterial color="#d32f2f" /></Box>
-       {/* Legs */}
-       <Box args={[0.6, 0.05, 0.05]} position={[0, 0, 0.2]} rotation={[0, 0.2, 0]}><meshStandardMaterial color="#b71c1c" /></Box>
-       <Box args={[0.6, 0.05, 0.05]} position={[0, 0, -0.2]} rotation={[0, -0.2, 0]}><meshStandardMaterial color="#b71c1c" /></Box>
-       {/* Eyes */}
-       <Box args={[0.05, 0.1, 0.05]} position={[0.15, 0.15, 0.15]}><meshStandardMaterial color="black" /></Box>
-       <Box args={[0.05, 0.1, 0.05]} position={[-0.15, 0.15, 0.15]}><meshStandardMaterial color="black" /></Box>
-    </group>
-  </AnimatedElement>
-);
-
-const Turtle = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.3}>
-    <group position={[0, 1, 0]}>
-      <Sphere args={[0.4, 5, 5]} scale={[1, 0.5, 1.1]} position={[0, 0.1, 0]}><meshStandardMaterial color="#43a047" flatShading /></Sphere>
-      <Sphere args={[0.15, 4, 4]} position={[0, 0.1, 0.5]}><meshStandardMaterial color="#8bc34a" /></Sphere>
-      <Box args={[0.2, 0.05, 0.3]} position={[0.3, 0, 0.2]} rotation={[0, 0.5, 0]}><meshStandardMaterial color="#8bc34a" /></Box>
-      <Box args={[0.2, 0.05, 0.3]} position={[-0.3, 0, 0.2]} rotation={[0, -0.5, 0]}><meshStandardMaterial color="#8bc34a" /></Box>
-    </group>
-  </AnimatedElement>
-);
-
 // Animated rotating group for sharks/fish
 const SwimmingGroup = ({ children, radius, speed, reverse = false }: { children: React.ReactNode, radius: number, speed: number, reverse?: boolean }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -118,26 +97,6 @@ const SwimmingGroup = ({ children, radius, speed, reverse = false }: { children:
     </group>
   );
 }
-
-const Shark = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.6}>
-    <group position={[0, -0.5, 0]}> 
-       <Box args={[0.4, 0.4, 1.2]} position={[0, 0, 0]}><meshStandardMaterial color="#90a4ae" /></Box>
-       <Cone args={[0.3, 0.8, 4]} rotation={[Math.PI/2, 0, 0]} position={[0, 0, -0.8]}><meshStandardMaterial color="#78909c" /></Cone>
-       <Cone args={[0.1, 0.4, 4]} position={[0, 0.3, 0.2]}><meshStandardMaterial color="#90a4ae" /></Cone>
-    </group>
-  </AnimatedElement>
-);
-
-const FishSchool = ({ isVisible, color }: { isVisible: boolean, color: string }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.15}>
-     <group position={[0, -0.3, 0]}>
-        <Box args={[0.2, 0.5, 1]}><meshStandardMaterial color={color} /></Box>
-        <Box args={[0.2, 0.5, 1]} position={[1, -0.5, 2]}><meshStandardMaterial color={color} /></Box>
-        <Box args={[0.2, 0.5, 1]} position={[-1, 0.5, 1]}><meshStandardMaterial color={color} /></Box>
-     </group>
-  </AnimatedElement>
-);
 
 // --- Main Island Component ---
 

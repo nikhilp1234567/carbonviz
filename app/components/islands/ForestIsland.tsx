@@ -3,87 +3,9 @@
 import React, { useMemo } from 'react';
 import { Cone, Cylinder, Sphere, Box } from '@react-three/drei';
 import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, MovingElement, ISLAND_CONFIG } from './Shared';
-
-// --- Wildlife Components ---
-
-const Eagle = () => (
-  <MovingElement type="bounce" speed={2} intensity={0.1}>
-    <group position={[0, 0, 0]}>
-      {/* Body */}
-      <Box args={[0.2, 0.15, 0.3]} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#3e2723" />
-      </Box>
-      {/* White Head */}
-      <Box args={[0.12, 0.12, 0.15]} position={[0, 0.1, 0.15]}>
-        <meshStandardMaterial color="#f5f5f5" />
-      </Box>
-      {/* Beak */}
-      <Cone args={[0.03, 0.1, 4]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0.1, 0.25]}>
-        <meshStandardMaterial color="#ffca28" />
-      </Cone>
-      {/* Wings */}
-      <Box args={[0.6, 0.05, 0.2]} position={[0, 0.05, -0.05]}>
-        <meshStandardMaterial color="#3e2723" />
-      </Box>
-    </group>
-  </MovingElement>
-);
-
-const Bear = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.7}>
-    <MovingElement type="breathe" speed={1} intensity={0.03}>
-      <group position={[0, 0.5, 0]}>
-        {/* Body */}
-        <Box args={[0.8, 0.7, 1.2]} position={[0, 0.4, 0]}>
-          <meshStandardMaterial color="#3e2723" />
-        </Box>
-        {/* Head */}
-        <Box args={[0.5, 0.5, 0.5]} position={[0, 0.8, 0.7]}>
-          <meshStandardMaterial color="#3e2723" />
-        </Box>
-        {/* Snout */}
-        <Box args={[0.25, 0.2, 0.2]} position={[0, 0.7, 1.0]}>
-          <meshStandardMaterial color="#21110e" />
-        </Box>
-        {/* Legs */}
-        <Box args={[0.25, 0.5, 0.25]} position={[-0.25, 0, 0.4]}><meshStandardMaterial color="#2d1b16" /></Box>
-        <Box args={[0.25, 0.5, 0.25]} position={[0.25, 0, 0.4]}><meshStandardMaterial color="#2d1b16" /></Box>
-        <Box args={[0.25, 0.5, 0.25]} position={[-0.25, 0, -0.4]}><meshStandardMaterial color="#2d1b16" /></Box>
-        <Box args={[0.25, 0.5, 0.25]} position={[0.25, 0, -0.4]}><meshStandardMaterial color="#2d1b16" /></Box>
-      </group>
-    </MovingElement>
-  </AnimatedElement>
-);
-
-const Wolf = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.5}>
-    <MovingElement type="breathe" speed={1.5} intensity={0.02}>
-      <group position={[0, 0.4, 0]}>
-        {/* Body */}
-        <Box args={[0.5, 0.4, 1.0]} position={[0, 0.4, 0]}>
-          <meshStandardMaterial color="#78909c" />
-        </Box>
-        {/* Head */}
-        <Box args={[0.3, 0.3, 0.4]} position={[0, 0.7, 0.55]}>
-          <meshStandardMaterial color="#78909c" />
-        </Box>
-        {/* Snout */}
-        <Box args={[0.15, 0.15, 0.2]} position={[0, 0.65, 0.8]}>
-          <meshStandardMaterial color="#455a64" />
-        </Box>
-        {/* Tail */}
-        <Box args={[0.1, 0.1, 0.4]} position={[0, 0.5, -0.6]} rotation={[0.2, 0, 0]}>
-          <meshStandardMaterial color="#78909c" />
-        </Box>
-        {/* Legs */}
-        <Box args={[0.12, 0.5, 0.12]} position={[-0.15, 0, 0.35]}><meshStandardMaterial color="#546e7a" /></Box>
-        <Box args={[0.12, 0.5, 0.12]} position={[0.15, 0, 0.35]}><meshStandardMaterial color="#546e7a" /></Box>
-        <Box args={[0.12, 0.5, 0.12]} position={[-0.15, 0, -0.35]}><meshStandardMaterial color="#546e7a" /></Box>
-        <Box args={[0.12, 0.5, 0.12]} position={[0.15, 0, -0.35]}><meshStandardMaterial color="#546e7a" /></Box>
-      </group>
-    </MovingElement>
-  </AnimatedElement>
-);
+import { ForestBear } from '../animals/ForestBear';
+import { Eagle } from '../animals/Eagle';
+import { Wolf } from '../animals/Wolf';
 
 // --- Main Island Component ---
 
@@ -197,7 +119,7 @@ export const ForestIsland = ({ health }: IslandProps) => {
       {groundAnimals.map((anim, i) => (
         <group key={`anim-${i}`} position={anim.position} rotation={[0, anim.rotation, 0]}>
           {anim.type === 'bear' ? (
-            <Bear isVisible={health > anim.threshold} />
+            <ForestBear isVisible={health > anim.threshold} />
           ) : (
             <Wolf isVisible={health > anim.threshold} />
           )}

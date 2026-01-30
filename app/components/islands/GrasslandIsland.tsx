@@ -3,140 +3,11 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Cone, Cylinder, Sphere, Box } from '@react-three/drei';
-import { IslandProps, getCircularPositions, IslandBase, AnimatedElement, ISLAND_CONFIG } from './Shared';
+import { IslandProps, getCircularPositions, IslandBase, AnimatedElement, ISLAND_CONFIG, MovingElement } from './Shared';
 import * as THREE from 'three';
-
-// --- Animation Helper ---
-
-const MovingElement = ({ 
-  type, 
-  speed = 1, 
-  intensity = 0.1, 
-  offset = 0,
-  children 
-}: { 
-  type: 'sway' | 'bounce' | 'breathe', 
-  speed?: number, 
-  intensity?: number, 
-  offset?: number,
-  children: React.ReactNode 
-}) => {
-  const ref = useRef<THREE.Group>(null);
-  const randomOffset = useMemo(() => Math.random() * 100, []);
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      const t = clock.elapsedTime + randomOffset + offset;
-      
-      if (type === 'sway') {
-        // Wind effect for grass/shrubs
-        ref.current.rotation.z = Math.sin(t * speed) * intensity;
-        ref.current.rotation.x = Math.cos(t * speed * 0.7) * (intensity * 0.5);
-      } else if (type === 'bounce') {
-        // Hopping effect
-        ref.current.position.y = Math.abs(Math.sin(t * speed)) * intensity;
-      } else if (type === 'breathe') {
-        // Subtle expansion for large animals
-        const s = 1 + Math.sin(t * speed) * intensity;
-        ref.current.scale.set(1, s, 1);
-      }
-    }
-  });
-
-  return <group ref={ref}>{children}</group>;
-};
-
-// --- Fauna Components ---
-
-const Bison = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.6}>
-    <MovingElement type="breathe" speed={1.5} intensity={0.02}>
-      <group position={[0, 0.6, 0]}>
-        {/* Massive Hump/Shoulders */}
-        <Box args={[0.9, 0.9, 1.0]} position={[0, 0.3, -0.2]}>
-          <meshStandardMaterial color="#3e2723" />
-        </Box>
-        {/* Hindquarters */}
-        <Box args={[0.8, 0.7, 0.8]} position={[0, 0.1, 0.6]}>
-          <meshStandardMaterial color="#4e342e" />
-        </Box>
-        {/* Head (Lower than hump) */}
-        <group position={[0, 0.1, -0.9]}>
-           <Box args={[0.5, 0.6, 0.6]}><meshStandardMaterial color="#21110e" /></Box>
-           {/* Horns */}
-           <Cone args={[0.08, 0.4, 4]} position={[0.25, 0.4, 0]} rotation={[0, 0, -0.5]}><meshStandardMaterial color="#eeeeee" /></Cone>
-           <Cone args={[0.08, 0.4, 4]} position={[-0.25, 0.4, 0]} rotation={[0, 0, 0.5]}><meshStandardMaterial color="#eeeeee" /></Cone>
-           {/* Beard */}
-           <Box args={[0.15, 0.3, 0.1]} position={[0, -0.35, -0.2]}><meshStandardMaterial color="#1a0f0d" /></Box>
-        </group>
-        {/* Legs */}
-        <Box args={[0.2, 0.5, 0.2]} position={[-0.3, -0.5, -0.2]}><meshStandardMaterial color="#21110e" /></Box>
-        <Box args={[0.2, 0.5, 0.2]} position={[0.3, -0.5, -0.2]}><meshStandardMaterial color="#21110e" /></Box>
-        <Box args={[0.2, 0.5, 0.2]} position={[-0.3, -0.5, 0.7]}><meshStandardMaterial color="#21110e" /></Box>
-        <Box args={[0.2, 0.5, 0.2]} position={[0.3, -0.5, 0.7]}><meshStandardMaterial color="#21110e" /></Box>
-      </group>
-    </MovingElement>
-  </AnimatedElement>
-);
-
-const Elk = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.55}>
-    <MovingElement type="breathe" speed={2} intensity={0.015}>
-      <group position={[0, 0.7, 0]}>
-         {/* Body */}
-         <Box args={[0.6, 0.6, 1.2]} position={[0, 0.3, 0]}>
-           <meshStandardMaterial color="#8d6e63" />
-         </Box>
-         {/* Neck & Head */}
-         <group position={[0, 0.8, -0.5]} rotation={[0.3, 0, 0]}>
-            <Cylinder args={[0.15, 0.2, 0.6]} position={[0, 0, 0]}><meshStandardMaterial color="#795548" /></Cylinder>
-            <Box args={[0.25, 0.25, 0.4]} position={[0, 0.4, -0.1]}><meshStandardMaterial color="#5d4037" /></Box>
-            {/* Antlers */}
-            <group position={[0, 0.6, 0]}>
-               <Cylinder args={[0.02, 0.02, 0.8]} position={[0.3, 0.3, 0]} rotation={[0, 0, -0.5]}><meshStandardMaterial color="#d7ccc8" /></Cylinder>
-               <Cylinder args={[0.02, 0.02, 0.8]} position={[-0.3, 0.3, 0]} rotation={[0, 0, 0.5]}><meshStandardMaterial color="#d7ccc8" /></Cylinder>
-               <Cylinder args={[0.02, 0.02, 0.4]} position={[0.4, 0.4, 0.2]} rotation={[0.5, 0, 0]}><meshStandardMaterial color="#d7ccc8" /></Cylinder>
-               <Cylinder args={[0.02, 0.02, 0.4]} position={[-0.4, 0.4, 0.2]} rotation={[0.5, 0, 0]}><meshStandardMaterial color="#d7ccc8" /></Cylinder>
-            </group>
-         </group>
-         {/* Long Legs */}
-         <Box args={[0.1, 0.8, 0.1]} position={[-0.2, -0.4, 0.4]}><meshStandardMaterial color="#4e342e" /></Box>
-         <Box args={[0.1, 0.8, 0.1]} position={[0.2, -0.4, 0.4]}><meshStandardMaterial color="#4e342e" /></Box>
-         <Box args={[0.1, 0.8, 0.1]} position={[-0.2, -0.4, -0.4]}><meshStandardMaterial color="#4e342e" /></Box>
-         <Box args={[0.1, 0.8, 0.1]} position={[0.2, -0.4, -0.4]}><meshStandardMaterial color="#4e342e" /></Box>
-      </group>
-    </MovingElement>
-  </AnimatedElement>
-);
-
-const Bear = ({ isVisible }: { isVisible: boolean }) => (
-  <AnimatedElement isVisible={isVisible} baseScale={0.5}>
-    <MovingElement type="bounce" speed={1} intensity={0.05}>
-      <group position={[0, 0.4, 0]}>
-        {/* Body */}
-        <Box args={[0.7, 0.6, 1.1]} position={[0, 0.3, 0]}>
-          <meshStandardMaterial color="#1a1a1a" />
-        </Box>
-        {/* Head */}
-        <Box args={[0.45, 0.45, 0.45]} position={[0, 0.6, 0.7]}>
-          <meshStandardMaterial color="#1a1a1a" />
-        </Box>
-        {/* Snout */}
-        <Box args={[0.2, 0.15, 0.2]} position={[0, 0.55, 0.95]}>
-          <meshStandardMaterial color="#424242" />
-        </Box>
-        {/* Ears */}
-        <Box args={[0.1, 0.1, 0.05]} position={[0.18, 0.85, 0.65]}><meshStandardMaterial color="#1a1a1a" /></Box>
-        <Box args={[0.1, 0.1, 0.05]} position={[-0.18, 0.85, 0.65]}><meshStandardMaterial color="#1a1a1a" /></Box>
-        {/* Legs */}
-        <Box args={[0.2, 0.5, 0.2]} position={[-0.25, 0, 0.35]}><meshStandardMaterial color="#1a1a1a" /></Box>
-        <Box args={[0.2, 0.5, 0.2]} position={[0.25, 0, 0.35]}><meshStandardMaterial color="#1a1a1a" /></Box>
-        <Box args={[0.2, 0.5, 0.2]} position={[-0.25, 0, -0.35]}><meshStandardMaterial color="#1a1a1a" /></Box>
-        <Box args={[0.2, 0.5, 0.2]} position={[0.25, 0, -0.35]}><meshStandardMaterial color="#1a1a1a" /></Box>
-      </group>
-    </MovingElement>
-  </AnimatedElement>
-);
+import { Bison } from '../animals/Bison';
+import { Elk } from '../animals/Elk';
+import { GrasslandBear } from '../animals/GrasslandBear';
 
 // --- Flora Components ---
 
@@ -268,7 +139,7 @@ export const GrasslandIsland = ({ health }: IslandProps) => {
          <group key={`anim-${i}`} position={anim.position} rotation={[0, anim.rotation, 0]}>
             {anim.type === 0 && <Bison isVisible={health > anim.threshold} />}
             {anim.type === 1 && <Elk isVisible={health > anim.threshold} />}
-            {anim.type === 2 && <Bear isVisible={health > anim.threshold} />}
+            {anim.type === 2 && <GrasslandBear isVisible={health > anim.threshold} />}
          </group>
       ))}
     </group>
