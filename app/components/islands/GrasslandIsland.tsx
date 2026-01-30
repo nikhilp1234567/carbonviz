@@ -9,16 +9,9 @@ import { Bison } from '../animals/Bison';
 import { Elk } from '../animals/Elk';
 import { GrasslandBear } from '../animals/GrasslandBear';
 
-// --- Flora Components ---
+import { InstancedCarpet } from './InstancedCarpet';
 
-const ShortGrassTuft = () => (
-  // Simple tuft for carpeting, static or very low movement
-  <group position={[0, 0.05, 0]}>
-     <Cone args={[0.03, 0.3, 3]} position={[0.02, 0, 0.02]} rotation={[0.1, 0.5, 0.1]}><meshStandardMaterial color="#aed581" /></Cone>
-     <Cone args={[0.03, 0.25, 3]} position={[-0.02, 0, -0.01]} rotation={[-0.1, 0.2, -0.1]}><meshStandardMaterial color="#9ccc65" /></Cone>
-     <Cone args={[0.03, 0.2, 3]} position={[0, 0, 0.03]} rotation={[0.2, 1, 0]}><meshStandardMaterial color="#8bc34a" /></Cone>
-  </group>
-);
+// --- Flora Components ---
 
 const TallPrairieGrass = () => (
   <MovingElement type="sway" speed={2} intensity={0.15}>
@@ -102,14 +95,8 @@ export const GrasslandIsland = ({ health }: IslandProps) => {
       {/* Lighter Green Base for Prairie */}
       <IslandBase color="#efb556" health={health} />
       
-      {/* CARPET LAYER (Rendered first, lowest) */}
-      {carpet.map((item, i) => (
-         <group key={`carpet-${i}`} position={item.position} rotation={[0, item.rotation, 0]}>
-             <AnimatedElement isVisible={health > item.threshold} baseScale={item.scale}>
-                 <ShortGrassTuft />
-             </AnimatedElement>
-         </group>
-      ))}
+      {/* CARPET LAYER (Instanced for performance) */}
+      <InstancedCarpet items={carpet} health={health} />
 
       {/* FLORA LAYER */}
       {items.map((item, i) => {
