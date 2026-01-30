@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows, Float } from '@react-three/drei';
+import { OrbitControls, Environment, Float } from '@react-three/drei';
 import LoadingSpinner from './components/LoadingSpinner';
 import DomLoadingSpinner from './components/DomLoadingSpinner';
 import Logo from './components/Logo';
@@ -53,7 +53,8 @@ export default function Home() {
   const restoration = calculateRestoration(totalTonnes * 1000, activeTab);
 
   // LOGIC FIX: Inverted again per user request.
-  const visualDensity = Math.max(0.1, Math.min(1, 1 - (totalTonnes / MAX_ANNUAL_TONNES)));
+  const visualDensityRaw = Math.max(0.1, Math.min(1, 1 - (totalTonnes / MAX_ANNUAL_TONNES)));
+  const visualDensity = Math.round(visualDensityRaw * 1000) / 1000;
 
   // Dynamic Color Logic for Stats Card
   let cardColorClass = "bg-emerald-900/80 border-emerald-700/30 ring-emerald-400/20 hover:bg-emerald-900/90";
@@ -231,7 +232,7 @@ export default function Home() {
               </group>
             </Float>
 
-            <ContactShadows position={[0, -5, 0]} opacity={0.3} scale={40} blur={2.5} far={10} resolution={256} color="#004d40" />
+
            </Suspense>
         </Canvas>
       </div>
