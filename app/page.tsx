@@ -30,13 +30,10 @@ export default function Home() {
   const [mobileTab, setMobileTab] = useState<'form' | 'world'>('form');
 
   const inputs = convertUserOptionsToInputs(options);
-  const { totalKg, totalTonnes } = calculateCarbon(inputs);
-  const restoration = calculateRestoration(totalKg, activeTab);
+  const { totalTonnes } = calculateCarbon(inputs);
+  const restoration = calculateRestoration(totalTonnes * 1000, activeTab);
 
   // LOGIC FIX: Inverted again per user request.
-  // Low Carbon = High Density (Lush/Healthy).
-  // High Carbon = Low Density (Destroyed).
-  // 0 tonnes -> 1.0 density. MAX -> 0.1 density.
   const visualDensity = Math.max(0.1, Math.min(1, 1 - (totalTonnes / MAX_ANNUAL_TONNES)));
 
   // Dynamic Color Logic for Stats Card
@@ -45,28 +42,29 @@ export default function Home() {
   let badgeColorClass = "bg-emerald-800/50 text-emerald-200 border-emerald-700/50";
 
   if (totalTonnes > 20) {
-     // High Impact -> Red
      cardColorClass = "bg-red-900/80 border-red-700/30 ring-red-400/20 hover:bg-red-900/90";
      titleColorClass = "text-red-300";
      badgeColorClass = "bg-red-800/50 text-red-200 border-red-700/50";
   } else if (totalTonnes > 8) {
-     // Medium Impact -> Yellow/Orange
      cardColorClass = "bg-yellow-900/80 border-yellow-700/30 ring-yellow-400/20 hover:bg-yellow-900/90";
      titleColorClass = "text-yellow-300";
      badgeColorClass = "bg-yellow-800/50 text-yellow-200 border-yellow-700/50";
   }
 
   return (
-    <main className="relative h-screen w-screen overflow-hidden bg-gradient-to-b bg-blue-300  text-gray-800 font-sans">
+    <main className="relative h-[100dvh] w-screen overflow-hidden bg-gradient-to-b bg-blue-300 text-gray-800 font-sans">
       
-      {/* --- UI LAYER --- */}
-      <div className="absolute inset-0 z-10 pointer-events-none p-4 md:p-8">
+      {/* --- UI LAYER (SCROLLABLE WRAPPER) --- */}
+      {/* Changed: overflow-y-auto allows scrolling on small screens. z-10 puts it above canvas. */}
+      <div className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden no-scrollbar">
         
-        {/* TOP LAYER WRAPPER */}
-        <div className="flex flex-col md:flex-row justify-between items-start w-full h-full relative">
+        {/* CONTAINER with Safe Area Padding */}
+        {/* Changed: pt-14 for mobile notch, pb-32 for bottom nav clearance */}
+        <div className="w-full min-h-full p-4 pt-14 md:p-8 md:pt-8 pb-32 flex flex-col lg:flex-row justify-between items-start pointer-events-none">
           
           {/* LEFT COLUMN: Calculator & Stats Stacked */}
-          <div className={`flex flex-col gap-4 w-full max-w-sm pointer-events-auto ${mobileTab === 'world' ? 'hidden md:flex' : 'flex'}`}>
+          {/* Changed: lg:flex for layout switch. md:max-w-md makes tablet view wider/nicer. */}
+          <div className={`flex flex-col gap-4 w-full max-w-sm md:max-w-md lg:max-w-sm pointer-events-auto transition-opacity duration-300 ${mobileTab === 'world' ? 'hidden lg:flex' : 'flex'}`}>
             
              {/* 1. Calculator Card */}
              <div className="bg-white/40 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-6 transition-all duration-300 hover:bg-white/50 ring-1 ring-white/20">
@@ -91,7 +89,7 @@ export default function Home() {
                 </div>
              </div>
 
-             {/* 2. Restoration Stats (Moved below Calculator) */}
+             {/* 2. Restoration Stats */}
              <div className={`backdrop-blur-xl shadow-2xl rounded-3xl p-6 text-white w-full border ring-1 transition-all ${cardColorClass}`}>
                 <div className="flex justify-between items-end md:block md:text-right">
                   <div>
@@ -107,8 +105,8 @@ export default function Home() {
                 </div>
              </div>
 
-             {/* 3. Mobile Ecosystem Selector (Visible only on mobile, wrapped to prevent scroll) */}
-             <div className="md:hidden w-full">
+             {/* 3. Mobile Ecosystem Selector (Visible only on mobile/tablet portrait) */}
+             <div className="lg:hidden w-full pointer-events-auto">
                 <div className="bg-white/30 backdrop-blur-xl p-2 rounded-2xl shadow-xl border border-white/40 flex flex-wrap justify-center gap-2">
                   {ECOSYSTEMS.map((eco) => (
                     <button
@@ -128,9 +126,10 @@ export default function Home() {
 
           </div>
 
-          {/* TOP RIGHT: Navigation Tabs (Moved from Bottom) */}
-          <div className="hidden md:block pointer-events-auto absolute top-0 right-0 md:relative">
-            <div className="bg-white/30 backdrop-blur-xl p-1.5 rounded-full shadow-2xl border border-white/40 flex gap-1 overflow-x-auto max-w-[calc(100vw-2rem)] md:max-w-none">
+          {/* TOP RIGHT: Desktop Navigation Tabs */}
+          {/* Changed: hidden md:block -> hidden lg:block to prevent overlap on tablets */}
+          <div className="hidden lg:block pointer-events-auto sticky top-8">
+            <div className="bg-white/30 backdrop-blur-xl p-1.5 rounded-full shadow-2xl border border-white/40 flex gap-1">
               {ECOSYSTEMS.map((eco) => (
                 <button
                   key={eco}
@@ -146,35 +145,35 @@ export default function Home() {
               ))}
             </div>
           </div>
-          
-           {/* MOBILE BOTTOM NAV */}
-           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 md:hidden pointer-events-auto w-max max-w-[90vw]">
-            <div className="flex bg-white/90 backdrop-blur-xl rounded-full p-1.5 shadow-2xl border border-white/40 ring-1 ring-black/5">
-              <button
-                onClick={() => setMobileTab('form')}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
-                  mobileTab === 'form'
-                    ? 'bg-emerald-600 text-white shadow-lg'
-                    : 'text-gray-500 hover:bg-gray-100'
-                }`}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                <span>Calculator</span>
-              </button>
-              <button
-                onClick={() => setMobileTab('world')}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
-                  mobileTab === 'world'
-                    ? 'bg-emerald-600 text-white shadow-lg'
-                    : 'text-gray-500 hover:bg-gray-100'
-                }`}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span>World</span>
-              </button>
-            </div>
-          </div>
 
+        </div>
+      </div>
+
+      {/* --- MOBILE BOTTOM NAV (Fixed outside scroll area) --- */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 lg:hidden pointer-events-auto w-max max-w-[90vw]">
+        <div className="flex bg-white/90 backdrop-blur-xl rounded-full p-1.5 shadow-2xl border border-white/40 ring-1 ring-black/5">
+          <button
+            onClick={() => setMobileTab('form')}
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
+              mobileTab === 'form'
+                ? 'bg-emerald-600 text-white shadow-lg'
+                : 'text-gray-500 hover:bg-gray-100'
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            <span>Calculator</span>
+          </button>
+          <button
+            onClick={() => setMobileTab('world')}
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
+              mobileTab === 'world'
+                ? 'bg-emerald-600 text-white shadow-lg'
+                : 'text-gray-500 hover:bg-gray-100'
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>World</span>
+          </button>
         </div>
       </div>
 
@@ -203,8 +202,7 @@ export default function Home() {
               target={[0, 0, 0]}
             />
 
-<Float speed={2} rotationIntensity={0} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
-              {/* Position Change: Moved to [9, 0, 0] and scaled up */}
+            <Float speed={2} rotationIntensity={0} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
               <group position={[0, 0, 0]} scale={1.8}>
                 {activeTab === 'Forest' && <ForestIsland health={visualDensity} />}
                 {activeTab === 'Rainforest' && <RainforestIsland health={visualDensity} />}
