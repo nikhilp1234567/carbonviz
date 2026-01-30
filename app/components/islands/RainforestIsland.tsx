@@ -8,6 +8,8 @@ import { Snake } from '../animals/Snake';
 import { Parrot } from '../animals/Parrot';
 import { Monkey } from '../animals/Monkey';
 
+import { InstancedFern, InstancedBanana, InstancedBush, InstancedTallGrass } from './InstancedRainforest';
+
 // --- Giant Tree (Rare) ---
 const GiantKapok = () => (
   <MovingElement type="sway" speed={0.5} intensity={0.02}>
@@ -31,6 +33,12 @@ export const RainforestIsland = ({ health }: IslandProps) => {
   // Modulo 8 used below for variety
   const items = useMemo(() => getCircularPositions(320, ISLAND_CONFIG.contentRadius, 300), []);
   
+  // Filter for Instanced Foliage (Skipping index 12 which is the Giant Tree)
+  const ferns = useMemo(() => items.filter((_, i) => i !== 12 && i % 8 === 1), [items]);
+  const bananas = useMemo(() => items.filter((_, i) => i !== 12 && i % 8 === 4), [items]);
+  const bushes = useMemo(() => items.filter((_, i) => i !== 12 && i % 8 === 6), [items]);
+  const grasses = useMemo(() => items.filter((_, i) => i !== 12 && i % 8 === 7), [items]);
+
   // Generate ground animals
   const groundAnimals = useMemo(() => {
     const raw = getCircularPositions(10, ISLAND_CONFIG.faunaRadius, 888);
@@ -44,13 +52,22 @@ export const RainforestIsland = ({ health }: IslandProps) => {
     <group>
       <IslandBase color="#5f5444" health={health} />
       
-      {/* FLORA LAYERS */}
+      {/* INSTANCED FOLIAGE */}
+      <InstancedFern items={ferns} health={health} />
+      <InstancedBanana items={bananas} health={health} />
+      <InstancedBush items={bushes} health={health} />
+      <InstancedTallGrass items={grasses} health={health} />
+
+      {/* OTHER FLORA LAYERS (Trees & Unique Items) */}
       {items.map((item, i) => {
         // Specific check for ONE Giant Tree
         const isGiantTree = i === 12; 
         
         // Use modulo for standard variety (8 types)
         const type = i % 8; 
+
+        // Skip instanced types
+        if (!isGiantTree && (type === 1 || type === 4 || type === 6 || type === 7)) return null;
 
         // Animal Placement Logic
         const hasMonkey = type === 2 && (i % 7 === 0);
@@ -85,17 +102,6 @@ export const RainforestIsland = ({ health }: IslandProps) => {
                 </MovingElement>
               )}
 
-              {/* Type 1: Large Fern */}
-              {type === 1 && (
-                <MovingElement type="sway" speed={1.5} intensity={0.08} offset={i}>
-                  <group position={[0, 0.2, 0]}>
-                    <Cone args={[0.15, 1.2, 4]} rotation={[0, 0, 0.5]} position={[0.2, 0.2, 0]}><meshStandardMaterial color="#43a047" /></Cone>
-                    <Cone args={[0.15, 1.2, 4]} rotation={[0, 0, -0.5]} position={[-0.2, 0.2, 0]}><meshStandardMaterial color="#43a047" /></Cone>
-                    <Cone args={[0.15, 1.0, 4]} rotation={[0.5, 0, 0]} position={[0, 0.2, 0.2]}><meshStandardMaterial color="#388e3c" /></Cone>
-                  </group>
-                </MovingElement>
-              )}
-
               {/* Type 2: Palm Tree */}
               {type === 2 && (
                 <MovingElement type="sway" speed={1} intensity={0.06} offset={i}>
@@ -122,18 +128,6 @@ export const RainforestIsland = ({ health }: IslandProps) => {
                 </MovingElement>
               )}
 
-              {/* Type 4: Banana / Elephant Ear Plant */}
-              {type === 4 && (
-                 <MovingElement type="sway" speed={1.8} intensity={0.07} offset={i}>
-                   <group position={[0, 0.4, 0]}>
-                      <Cylinder args={[0.05, 0.08, 0.4]} position={[0, 0.2, 0]}><meshStandardMaterial color="#33691e" /></Cylinder>
-                      {/* Big Leaves */}
-                      <Sphere args={[0.4, 4, 4]} position={[0.3, 0.6, 0]} scale={[0.1, 1, 0.5]} rotation={[0, 0, -0.5]}><meshStandardMaterial color="#7cb342" flatShading /></Sphere>
-                      <Sphere args={[0.4, 4, 4]} position={[-0.3, 0.5, 0.2]} scale={[0.1, 1, 0.5]} rotation={[0, 0, 0.5]}><meshStandardMaterial color="#7cb342" flatShading /></Sphere>
-                   </group>
-                 </MovingElement>
-              )}
-
               {/* Type 5: Vine Tree */}
               {type === 5 && (
                 <MovingElement type="sway" speed={0.7} intensity={0.04} offset={i}>
@@ -146,28 +140,6 @@ export const RainforestIsland = ({ health }: IslandProps) => {
                      {hasParrot && <group position={[0, 2.8, 0]} rotation={[0, i, 0]}><Parrot color={parrotColor} /></group>}
                   </group>
                 </MovingElement>
-              )}
-
-              {/* Type 6: Dense Bush */}
-              {type === 6 && (
-                 <MovingElement type="sway" speed={1.5} intensity={0.06} offset={i}>
-                   <group position={[0, 0.3, 0]}>
-                      <Sphere args={[0.5, 5, 5]} position={[0, 0, 0]}><meshStandardMaterial color="#1b5e20" flatShading /></Sphere>
-                      <Sphere args={[0.4, 5, 5]} position={[0.4, 0.2, 0]}><meshStandardMaterial color="#2e7d32" flatShading /></Sphere>
-                      <Sphere args={[0.4, 5, 5]} position={[-0.3, 0.1, 0.3]}><meshStandardMaterial color="#33691e" flatShading /></Sphere>
-                   </group>
-                 </MovingElement>
-              )}
-
-              {/* Type 7: Tall Grass Clump */}
-              {type === 7 && (
-                 <MovingElement type="sway" speed={2.5} intensity={0.12} offset={i}>
-                   <group position={[0, 0, 0]}>
-                      <Cone args={[0.05, 0.6, 3]} position={[0, 0.3, 0]} rotation={[0.2, 0, 0]}><meshStandardMaterial color="#8bc34a" /></Cone>
-                      <Cone args={[0.05, 0.5, 3]} position={[0.1, 0.25, 0]} rotation={[-0.2, 0, 0.2]}><meshStandardMaterial color="#9ccc65" /></Cone>
-                      <Cone args={[0.05, 0.7, 3]} position={[-0.1, 0.35, 0.1]} rotation={[0, 0, -0.2]}><meshStandardMaterial color="#7cb342" /></Cone>
-                   </group>
-                 </MovingElement>
               )}
 
             </AnimatedElement>
