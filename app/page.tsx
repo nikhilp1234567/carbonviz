@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Float } from '@react-three/drei';
@@ -38,6 +38,15 @@ export default function Home() {
 
   const [activeTab, setActiveTab] = useState<Ecosystem>('Forest');
   const [mobileTab, setMobileTab] = useState<'form' | 'world'>('form');
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const inputs = convertUserOptionsToInputs(options);
   const { totalTonnes } = calculateCarbon(inputs);
@@ -213,7 +222,7 @@ export default function Home() {
             />
 
             <Float speed={2} rotationIntensity={0} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
-              <group position={[0, 0, 0]} scale={1.8}>
+              <group position={[0, 0, 0]} scale={isMobile ? 1 : 1.8}>
                 {activeTab === 'Forest' && <ForestIsland health={visualDensity} />}
                 {activeTab === 'Rainforest' && <RainforestIsland health={visualDensity} />}
                 {activeTab === 'Mangrove' && <MangroveIsland health={visualDensity} />}
