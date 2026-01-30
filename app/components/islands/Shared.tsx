@@ -85,6 +85,15 @@ export const AnimatedElement = ({
 
   useFrame((state, delta) => {
     if (groupRef.current) {
+      // Avoid unnecessary updates if already close to target
+      if (Math.abs(currentScale.current - targetScale) < 0.001) {
+          if (groupRef.current.scale.x !== targetScale) {
+             groupRef.current.scale.set(targetScale, targetScale, targetScale);
+             currentScale.current = targetScale;
+          }
+          return;
+      }
+
       // Lerp factor (speed)
       const speed = 4 * delta;
       

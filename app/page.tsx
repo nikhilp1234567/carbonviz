@@ -1,13 +1,23 @@
 'use client';
 
 import React, { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Float } from '@react-three/drei';
-import CarbonCalculator from './components/CarbonCalculator';
-import { ForestIsland, RainforestIsland, MangroveIsland, PeatlandIsland, GrasslandIsland } from './components/Islands';
 import LoadingSpinner from './components/LoadingSpinner';
+import DomLoadingSpinner from './components/DomLoadingSpinner';
 import Logo from './components/Logo';
 import { calculateCarbon, calculateRestoration, convertUserOptionsToInputs, UserOptions, Ecosystem } from './utils/carbon';
+
+const CarbonCalculator = dynamic(() => import('./components/CarbonCalculator'), { 
+  loading: () => <div className="p-12 flex justify-center"><DomLoadingSpinner /></div> 
+});
+
+const ForestIsland = dynamic(() => import('./components/islands/ForestIsland').then((mod) => mod.ForestIsland));
+const RainforestIsland = dynamic(() => import('./components/islands/RainforestIsland').then((mod) => mod.RainforestIsland));
+const MangroveIsland = dynamic(() => import('./components/islands/MangroveIsland').then((mod) => mod.MangroveIsland));
+const PeatlandIsland = dynamic(() => import('./components/islands/PeatlandIsland').then((mod) => mod.PeatlandIsland));
+const GrasslandIsland = dynamic(() => import('./components/islands/GrasslandIsland').then((mod) => mod.GrasslandIsland));
 
 const ECOSYSTEMS: Ecosystem[] = ['Forest', 'Rainforest', 'Mangrove', 'Peatland', 'Grassland'];
 
