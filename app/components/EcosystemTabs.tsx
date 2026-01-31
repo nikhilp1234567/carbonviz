@@ -22,7 +22,7 @@ export default function EcosystemTabs({ activeTab, setActiveTab, ecosystems, isM
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex-grow text-center ${
                     activeTab === eco
                         ? 'bg-emerald-600 text-white shadow-md transform scale-105'
-                        : 'bg-white/40 text-gray-700 hover:bg-white/60 hover:text-emerald-800'
+                        : 'bg-white/40 text-gray-700 hover:bg-white/60 hover:text-emerald-900'
                     }`}
                 >
                     {eco}
@@ -43,7 +43,7 @@ export default function EcosystemTabs({ activeTab, setActiveTab, ecosystems, isM
                 className={`px-5 py-3 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap ${
                 activeTab === eco
                     ? 'bg-emerald-600 text-white shadow-lg scale-105'
-                    : 'text-gray-600 hover:bg-white/40 hover:text-emerald-800'
+                    : 'text-gray-700 hover:bg-white/50 hover:text-emerald-900'
                 }`}
             >
                 {eco}

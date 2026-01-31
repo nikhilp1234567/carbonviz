@@ -32,8 +32,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
     <div className="w-full space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className={groupClass}>
-          <label className={labelClass}>Household Size</label>
-          <select name="householdSize" value={options.householdSize} onChange={handleChange} className={selectClass}>
+          <label htmlFor="householdSize" className={labelClass}>Household Size</label>
+          <select id="householdSize" name="householdSize" value={options.householdSize} onChange={handleChange} className={selectClass}>
             <option value="1">1 Person</option>
             <option value="2">2 People</option>
             <option value="3-4">3-4 People</option>
@@ -43,8 +43,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
         </div>
 
         <div className={groupClass}>
-          <label className={labelClass}>Home Size</label>
-          <select name="homeSize" value={options.homeSize} onChange={handleChange} className={selectClass}>
+          <label htmlFor="homeSize" className={labelClass}>Home Size</label>
+          <select id="homeSize" name="homeSize" value={options.homeSize} onChange={handleChange} className={selectClass}>
             <option value="Small">Apartment</option>
             <option value="Medium">Medium House</option>
             <option value="Large">Large House</option>
@@ -55,8 +55,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
 
       <div className="grid grid-cols-2 gap-4">
         <div className={groupClass}>
-          <label className={labelClass}>Car Usage</label>
-          <select name="carUsage" value={options.carUsage} onChange={handleChange} className={selectClass}>
+          <label htmlFor="carUsage" className={labelClass}>Car Usage</label>
+          <select id="carUsage" name="carUsage" value={options.carUsage} onChange={handleChange} className={selectClass}>
             <option value="None">None</option>
             <option value="Low">Low (&lt;5k mi)</option>
             <option value="Average">Avg (~10k mi)</option>
@@ -66,8 +66,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
         </div>
 
         <div className={groupClass}>
-          <label className={labelClass}>Flights / Year</label>
-          <select name="flightFrequency" value={options.flightFrequency} onChange={handleChange} className={selectClass}>
+          <label htmlFor="flightFrequency" className={labelClass}>Flights / Year</label>
+          <select id="flightFrequency" name="flightFrequency" value={options.flightFrequency} onChange={handleChange} className={selectClass}>
             <option value="None">None</option>
             <option value="Occasional">1-2 Short</option>
             <option value="Frequent">2-3 Long</option>
@@ -79,8 +79,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
 
       <div className="grid grid-cols-2 gap-4">
         <div className={groupClass}>
-          <label className={labelClass}>Diet</label>
-          <select name="diet" value={options.diet} onChange={handleChange} className={selectClass}>
+          <label htmlFor="diet" className={labelClass}>Diet</label>
+          <select id="diet" name="diet" value={options.diet} onChange={handleChange} className={selectClass}>
             <option value="Meat Lover">Meat Lover</option>
             <option value="Average">Average</option>
             <option value="Vegetarian">Vegetarian</option>
@@ -90,8 +90,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
         </div>
 
         <div className={groupClass}>
-          <label className={labelClass}>Recycling</label>
-          <select name="recycling" value={options.recycling} onChange={handleChange} className={selectClass}>
+          <label htmlFor="recycling" className={labelClass}>Recycling</label>
+          <select id="recycling" name="recycling" value={options.recycling} onChange={handleChange} className={selectClass}>
             <option value="None">None</option>
             <option value="Some">Some</option>
             <option value="Diligent">Diligent</option>
@@ -102,8 +102,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
 
       <div className="grid grid-cols-2 gap-4">
         <div className={groupClass}>
-          <label className={labelClass}>Public Transport</label>
-          <select name="publicTransport" value={options.publicTransport} onChange={handleChange} className={selectClass}>
+          <label htmlFor="publicTransport" className={labelClass}>Public Transport</label>
+          <select id="publicTransport" name="publicTransport" value={options.publicTransport} onChange={handleChange} className={selectClass}>
             <option value="None">None</option>
             <option value="Occasional">Occasional</option>
             <option value="Frequent">Frequent</option>
@@ -112,8 +112,8 @@ export default function CarbonCalculator({ options, onChange }: Props) {
         </div>
 
         <div className={groupClass}>
-          <label className={labelClass}>Shopping Habits</label>
-          <select name="shopping" value={options.shopping} onChange={handleChange} className={selectClass}>
+          <label htmlFor="shopping" className={labelClass}>Shopping Habits</label>
+          <select id="shopping" name="shopping" value={options.shopping} onChange={handleChange} className={selectClass}>
             <option value="Minimal">Minimal</option>
             <option value="Average">Average</option>
             <option value="Shopaholic">Shopaholic</option>

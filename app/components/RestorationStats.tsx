@@ -29,7 +29,7 @@ export default function RestorationStats({ totalTonnes, restoration, activeTab }
     <div className={`backdrop-blur-xl shadow-2xl rounded-3xl p-6 text-white w-full border ring-1 transition-all ${cardColorClass}`}>
       <div className="flex justify-between items-end md:block md:text-right">
         <div>
-          <h4 className={`${titleColorClass} text-[10px] font-bold uppercase tracking-widest mb-2 opacity-80`}>Your Impact Equivalent</h4>
+          <h2 className={`${titleColorClass} text-[10px] font-bold uppercase tracking-widest mb-2 opacity-80`}>Your Impact Equivalent</h2>
           <div className="text-5xl font-black leading-none mb-1 tracking-tight">
             {restoration.count.toLocaleString()}
           </div>
