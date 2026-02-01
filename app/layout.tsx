@@ -8,10 +8,7 @@ const bricolage = Bricolage_Grotesque({
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+
 
 export const metadata: Metadata = {
   title: {
@@ -32,9 +29,9 @@ export const metadata: Metadata = {
     siteName: "CarbonViz",
     images: [
       {
-        url: "/og-image.jpg", // Make sure to add an OG image later if possible, or use a placeholder
+        url: "/icon.svg", // Make sure to add an OG image later if possible, or use a placeholder
         width: 1200,
-        height: 630,
+        height: 1200,
         alt: "CarbonViz Application Interface",
       },
     ],
@@ -43,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CarbonViz - Interactive Carbon Footprint Visualizer",
     description: "Visualize your carbon footprint and learn how to restore the balance.",
-    creator: "@nikhilparmar", // Replace with actual handle if known, otherwise generic
+    creator: "@scientificsaas", // Replace with actual handle if known, otherwise generic
   },
   robots: {
     index: true,
@@ -59,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${bricolage.variable} ${geistMono.variable} antialiased font-sans`}
+        className={`${bricolage.variable} antialiased font-sans`}
       >
         {children}
       </body>
