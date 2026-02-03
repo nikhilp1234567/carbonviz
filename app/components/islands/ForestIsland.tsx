@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Cone, Cylinder, Sphere, Box } from '@react-three/drei';
-import { IslandProps, getStablePositions, getCircularPositions, IslandBase, AnimatedElement, MovingElement, ISLAND_CONFIG } from './Shared';
+import { IslandProps, getCircularPositions, IslandBase, ISLAND_CONFIG } from './Shared';
 import { ForestBear } from '../animals/ForestBear';
 import { Eagle } from '../animals/Eagle';
 import { Wolf } from '../animals/Wolf';
+import { InstancedPine, InstancedOak, InstancedRedwood, InstancedBirch, InstancedLowBush, InstancedFerns } from './InstancedForest';
 
 // --- Main Island Component ---
 
@@ -23,98 +23,51 @@ export const ForestIsland = ({ health }: IslandProps) => {
     }));
   }, []);
 
+  // Filter items by type for Instanced Meshes
+  const pines = useMemo(() => items.filter((_, i) => i % 6 === 0), [items]);
+  const oaks = useMemo(() => items.filter((_, i) => i % 6 === 1), [items]);
+  const redwoods = useMemo(() => items.filter((_, i) => i % 6 === 2), [items]);
+  const birches = useMemo(() => items.filter((_, i) => i % 6 === 3), [items]);
+  const bushes = useMemo(() => items.filter((_, i) => i % 6 === 4), [items]);
+  const ferns = useMemo(() => items.filter((_, i) => i % 6 === 5), [items]);
+
+  // Eagle Logic:
+  // Original: hasEagle = (type === 0 || type === 5) && (i % 18 === 0)
+  // But strictly rendered only in Type 0 (Pine) and Type 2 (Redwood).
+  // However, since hasEagle was false for Type 2 (unless I misread 5 as 2), it only appeared on Pine.
+  // We will place eagles on Pines (Type 0) where i % 18 == 0.
+  const eaglePositions = useMemo(() => {
+    return items
+      .map((item, i) => ({ ...item, originalIndex: i }))
+      .filter(item => {
+         const type = item.originalIndex % 6;
+         // Only on Pines (0) for now to match effective original behavior
+         return (type === 0) && (item.originalIndex % 18 === 0);
+      });
+  }, [items]);
+
   return (
     <group>
       <IslandBase color="#558b2f" health={health} />
       
-      {/* FLORA LAYERS */}
-      {items.map((item, i) => {
-        // We use the 'variant' (0-2 usually) but modulo it to get more types
-        const type = i % 6; 
-        // Logic for eagle placement: Only on tall trees (0 or 2), rare chance
-        const hasEagle = (type === 0 || type === 5) && (i % 18 === 0);
-
-        return (
-          <group key={i} position={item.position} rotation={[0, item.rotation, 0]}>
-            <AnimatedElement isVisible={health > item.threshold} baseScale={item.scale}>
-              
-              {/* Type 0: Classic Pine */}
-              {type === 0 && (
-                <MovingElement type="sway" speed={1} intensity={0.05} offset={i}>
-                  <group>
-                    <Cylinder args={[0.15, 0.25, 0.6, 6]} position={[0, 0.3, 0]}><meshStandardMaterial color="#4e342e" /></Cylinder>
-                    <Cone args={[0.7, 1.2, 7]} position={[0, 0.9, 0]}><meshStandardMaterial color="#2e7d32" /></Cone>
-                    <Cone args={[0.5, 1.0, 7]} position={[0, 1.4, 0]}><meshStandardMaterial color="#388e3c" /></Cone>
-                    {hasEagle && <group position={[0, 1.9, 0]} rotation={[0, i, 0]}><Eagle /></group>}
-                  </group>
-                </MovingElement>
-              )}
-
-              {/* Type 1: Round Oak/Deciduous */}
-              {type === 1 && (
-                <MovingElement type="sway" speed={1.2} intensity={0.04} offset={i}>
-                  <group>
-                    <Cylinder args={[0.15, 0.2, 0.8, 6]} position={[0, 0.4, 0]}><meshStandardMaterial color="#5d4037" /></Cylinder>
-                    <Sphere args={[0.7, 6, 6]} position={[0, 1.1, 0]} scale={[1, 0.8, 1]}><meshStandardMaterial color="#43a047" flatShading /></Sphere>
-                    <Sphere args={[0.5, 5, 5]} position={[0.4, 1.3, 0]} scale={[1, 0.8, 1]}><meshStandardMaterial color="#4caf50" flatShading /></Sphere>
-                    <Sphere args={[0.5, 5, 5]} position={[-0.3, 1.2, 0.3]} scale={[1, 0.8, 1]}><meshStandardMaterial color="#388e3c" flatShading /></Sphere>
-                  </group>
-                </MovingElement>
-              )}
-
-              {/* Type 2: Tall Redwood/Pine */}
-              {type === 2 && (
-                <MovingElement type="sway" speed={0.8} intensity={0.06} offset={i}>
-                  <group scale={[1, 1.4, 1]}>
-                    <Cylinder args={[0.2, 0.3, 1.5, 7]} position={[0, 0.75, 0]}><meshStandardMaterial color="#3e2723" /></Cylinder>
-                    <Cone args={[0.8, 2, 7]} position={[0, 2, 0]}><meshStandardMaterial color="#1b5e20" /></Cone>
-                    {hasEagle && <group position={[0, 3, 0]} rotation={[0, i, 0]} scale={[1, 0.7, 1]}><Eagle /></group>}
-                  </group>
-                </MovingElement>
-              )}
-
-              {/* Type 3: Birch Tree (White trunk) */}
-              {type === 3 && (
-                <MovingElement type="sway" speed={1.5} intensity={0.05} offset={i}>
-                  <group>
-                    <Cylinder args={[0.1, 0.12, 1.2, 5]} position={[0, 0.6, 0]}>
-                      <meshStandardMaterial color="#eeeeee" />
-                    </Cylinder>
-                    {/* Black spots on birch */}
-                    <Box args={[0.11, 0.05, 0.11]} position={[0, 0.3, 0]} rotation={[0, 0.2, 0]}><meshStandardMaterial color="#212121" /></Box>
-                    <Box args={[0.11, 0.05, 0.11]} position={[0, 0.8, 0]} rotation={[0, -0.5, 0]}><meshStandardMaterial color="#212121" /></Box>
-                    <Sphere args={[0.6, 5, 5]} position={[0, 1.4, 0]} scale={[1, 1.2, 1]}><meshStandardMaterial color="#66bb6a" flatShading /></Sphere>
-                  </group>
-                </MovingElement>
-              )}
-
-              {/* Type 4: Low Bush */}
-              {type === 4 && (
-                <MovingElement type="sway" speed={2} intensity={0.08} offset={i}>
-                  <group position={[0, 0.2, 0]}>
-                    <Sphere args={[0.4, 4, 4]} position={[0, 0, 0]}><meshStandardMaterial color="#7cb342" flatShading /></Sphere>
-                    <Sphere args={[0.3, 4, 4]} position={[0.3, -0.1, 0]}><meshStandardMaterial color="#8bc34a" flatShading /></Sphere>
-                    <Sphere args={[0.35, 4, 4]} position={[-0.2, 0.1, 0.2]}><meshStandardMaterial color="#689f38" flatShading /></Sphere>
-                  </group>
-                </MovingElement>
-              )}
-
-              {/* Type 5: Ferns */}
-              {type === 5 && (
-                 <MovingElement type="sway" speed={2.5} intensity={0.1} offset={i}>
-                   <group position={[0, 0.1, 0]}>
-                      <Cone args={[0.3, 0.6, 3]} rotation={[0.2, 0, 0]} position={[0, 0, 0.1]}><meshStandardMaterial color="#558b2f" /></Cone>
-                      <Cone args={[0.3, 0.6, 3]} rotation={[-0.2, 2, 0]} position={[0.1, 0, -0.1]}><meshStandardMaterial color="#558b2f" /></Cone>
-                      <Cone args={[0.25, 0.5, 3]} rotation={[0.1, 4, 0]} position={[-0.1, 0, 0]}><meshStandardMaterial color="#689f38" /></Cone>
-                   </group>
-                 </MovingElement>
-              )}
-
-            </AnimatedElement>
-          </group>
-        );
-      })}
+      {/* INSTANCED FLORA LAYERS */}
+      <InstancedPine items={pines} health={health} />
+      <InstancedOak items={oaks} health={health} />
+      <InstancedRedwood items={redwoods} health={health} />
+      <InstancedBirch items={birches} health={health} />
+      <InstancedLowBush items={bushes} health={health} />
+      <InstancedFerns items={ferns} health={health} />
       
+      {/* EAGLES (Individual because they animate/are rare) */}
+      {eaglePositions.map((item, i) => (
+         <group key={`eagle-${i}`} position={item.position} rotation={[0, item.rotation, 0]}>
+             {/* Height matches the Pine tree top (approx 1.9) */}
+             <group position={[0, 1.9, 0]} rotation={[0, item.originalIndex, 0]}>
+                <Eagle />
+             </group>
+         </group>
+      ))}
+
       {/* FAUNA LAYERS */}
       {groundAnimals.map((anim, i) => (
         <group key={`anim-${i}`} position={anim.position} rotation={[0, anim.rotation, 0]}>

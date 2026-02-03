@@ -21,7 +21,7 @@ export default function EcosystemTabs({ activeTab, setActiveTab, ecosystems, isM
                     onClick={() => setActiveTab(eco)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex-grow text-center ${
                     activeTab === eco
-                        ? 'bg-emerald-600 text-white shadow-md transform scale-105'
+                        ? 'bg-emerald-600 text-white shadow-md transform scale-102'
                         : 'bg-white/40 text-gray-700 hover:bg-white/60 hover:text-emerald-900'
                     }`}
                 >

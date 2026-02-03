@@ -21,14 +21,14 @@ interface ThreeSceneProps {
 
 export default function ThreeScene({ activeTab, visualDensity, isMobile }: ThreeSceneProps) {
     return (
-        <Canvas shadows dpr={[1, 2]} camera={{ position: [15, 12, 15], fov: 35 }} gl={{ preserveDrawingBuffer: true }}>
+        <Canvas shadows={!isMobile} dpr={isMobile ? 1 : [1, 2]} camera={{ position: [15, 12, 15], fov: 35 }} gl={{ preserveDrawingBuffer: true }}>
             <Suspense fallback={<LoadingSpinner />}>
                 <Environment preset="park" />
                 <ambientLight intensity={0.6} />
                 <directionalLight 
                     position={[10, 20, 10]} 
                     intensity={1.5} 
-                    castShadow 
+                    castShadow={!isMobile}
                     shadow-mapSize={[1024, 1024]} 
                     shadow-bias={-0.0001}
                 />
@@ -44,7 +44,7 @@ export default function ThreeScene({ activeTab, visualDensity, isMobile }: Three
                     target={[0, 0, 0]}
                 />
 
-                <Float speed={2} rotationIntensity={0} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
+                <Float speed={isMobile ? 1 : 2} rotationIntensity={isMobile ? 0 : 0} floatIntensity={isMobile ? 0.1 : 0.2} floatingRange={[-0.1, 0.1]}>
                     <group position={[0, 0, 0]} scale={isMobile ? 1 : 1.8}>
                         {activeTab === 'Forest' && <ForestIsland health={visualDensity} />}
                         {activeTab === 'Rainforest' && <RainforestIsland health={visualDensity} />}
