@@ -3,18 +3,18 @@
 import React from 'react';
 
 interface MobileNavigationProps {
-  mobileTab: 'form' | 'world';
-  setMobileTab: (tab: 'form' | 'world') => void;
+  viewMode: 'form' | 'world';
+  setViewMode: (tab: 'form' | 'world') => void;
 }
 
-export default function MobileNavigation({ mobileTab, setMobileTab }: MobileNavigationProps) {
+export default function MobileNavigation({ viewMode, setViewMode }: MobileNavigationProps) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 lg:hidden pointer-events-auto w-max max-w-[90vw]">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto w-max max-w-[90vw]">
       <div className="flex bg-white/90 backdrop-blur-xl rounded-full p-1.5 shadow-2xl border border-white/40 ring-1 ring-black/5">
         <button
-          onClick={() => setMobileTab('form')}
+          onClick={() => setViewMode('form')}
           className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
-            mobileTab === 'form'
+            viewMode === 'form'
               ? 'bg-emerald-600 text-white shadow-lg'
               : 'text-gray-500 hover:bg-gray-100'
           }`}
@@ -23,9 +23,9 @@ export default function MobileNavigation({ mobileTab, setMobileTab }: MobileNavi
           <span>Calculator</span>
         </button>
         <button
-          onClick={() => setMobileTab('world')}
+          onClick={() => setViewMode('world')}
           className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
-            mobileTab === 'world'
+            viewMode === 'world'
               ? 'bg-emerald-600 text-white shadow-lg'
               : 'text-gray-500 hover:bg-gray-100'
           }`}
