@@ -17,19 +17,19 @@ export const metadata: Metadata = {
   },
   description: "Visualize the real-world impact of your lifestyle on nature. Calculate your carbon footprint and see how many trees or ecosystems are needed to restore balance.",
   keywords: ["carbon calculator", "carbon footprint", "nature loss visualizer", "ecosystem restoration", "sustainability", "climate change", "environment", "3d visualization"],
-  authors: [{ name: "Nikhil Parmar", url: "https://nikhilp.online" }],
+  authors: [{ name: "Nikhil Parmar", url: "https://www.nikhilp.online" }],
   creator: "Nikhil Parmar",
-  metadataBase: new URL("https://nikhilp.online/carbonviz"),
+  metadataBase: new URL("https://www.nikhilp.online/carbonviz"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://nikhilp.online/carbonviz",
+    url: "https://www.nikhilp.online/carbonviz",
     title: "CarbonViz - Interactive Carbon Footprint Visualizer",
     description: "Discover the environmental impact of your daily choices. See your carbon footprint visualized as ecosystem health.",
     siteName: "CarbonViz",
     images: [
       {
-        url: "/icon.svg", // Make sure to add an OG image later if possible, or use a placeholder
+        url: "/carbonviz/icon.svg", // Make sure to add an OG image later if possible, or use a placeholder
         width: 1200,
         height: 1200,
         alt: "CarbonViz Application Interface",
