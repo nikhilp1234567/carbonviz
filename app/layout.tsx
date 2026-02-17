@@ -13,6 +13,7 @@ const bricolage = Bricolage_Grotesque({
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.nikhilp.online"),
   title: {
     default: "CarbonViz - Interactive Carbon Footprint & Nature Loss Visualizer",
     template: "%s | CarbonViz",
@@ -21,7 +22,6 @@ export const metadata: Metadata = {
   keywords: ["carbon calculator", "carbon footprint", "nature loss visualizer", "ecosystem restoration", "sustainability", "climate change", "environment", "3d visualization"],
   authors: [{ name: "Nikhil Parmar", url: "https://www.nikhilp.online" }],
   creator: "Nikhil Parmar",
-  metadataBase: new URL("https://www.nikhilp.online/carbonviz"),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -43,6 +43,9 @@ export const metadata: Metadata = {
     title: "CarbonViz - Interactive Carbon Footprint Visualizer",
     description: "Visualize your carbon footprint and learn how to restore the balance.",
     creator: "@scientificsaas", // Replace with actual handle if known, otherwise generic
+  },
+  alternates: {
+    canonical: "/carbonviz",
   },
   robots: {
     index: true,
